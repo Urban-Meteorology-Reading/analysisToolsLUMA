@@ -1,0 +1,12 @@
+Package: analysisToolsLUMA
+Type: Package
+Title: Tools that can help speed up data analysis for LUMA instruments
+Version: 0.1.0
+Author: Kit Benjamin
+Maintainer: Kit Benjamin <k.j.benjamin@reading.ac.uk>
+Description: These functions can be use to make data anaylsis of data from 
+    LUMA instruments quicker and easier. Create time series of variables at 
+    different data quality levels 
+License: Open source: only useful for members of UoR micromet
+Encoding: UTF-8
+LazyData: true
