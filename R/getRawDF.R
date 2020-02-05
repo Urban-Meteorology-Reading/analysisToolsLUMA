@@ -5,12 +5,19 @@ getRawDF <- function(startDate, endDate, fileTimeRes, sep,
   dateList <- createDateList(startDate, endDate)
   # separate the resolution and unit of file res
   fileResList <- getFileRes(fileTimeRes)
+  #get the variable units from the metadata system
+  vars <- getUnits(variables, variableColNos)
   #read and pad data
   rawDataList <- readRawFiles(dateList, instrument, fileTimeRes, sep,
-                              variableColNos, variables, timeColFormat ,
+                              vars, timeColFormat,
                               nTimeCols, fileResList)
+
   #bind list elements
-  allData <- do.call(rbind, rawDataList)
+  allDataDf <- do.call(rbind, rawDataList)
+  allDataDf <- allDataDf[is.na(allDataDf['TIME']) == FALSE, ]
+
+  #add units to data
+  allData <- list(data = allDataDf, units = vars[c('variables', 'units'), ])
   return(allData)
 }
 

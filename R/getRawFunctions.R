@@ -19,6 +19,7 @@ readRawData <- function(x, separator, classCols){
              })
   } else {
     print(paste('File:', x, 'doesnt exist'))
+    return(NA)
   }
 }
 
@@ -84,8 +85,22 @@ padData <- function(Tinfo, fileResList, dayData){
   return(paddedData)
 }
 
+getUnits <- function(variables, variableColNos){
+  # get the units for the variable from the metadata system
+  varInfo <- lf_getVariables()
+
+  ### add chech here ###
+
+
+  units <- unlist(lapply(variables, function(x){
+    return(varInfo[varInfo$id == x, ]$unit)
+  }))
+  vars <- rbind(variables, units, variableColNos)
+  return(vars)
+}
+
 readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
-                         variableColNos, variables, timeColFormat ,
+                         vars, timeColFormat ,
                          nTimeCols, fileResList){
   rawDataList <- list()
   # for every date
@@ -104,10 +119,10 @@ readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
     #### what do if only 1 list entry
     dayData <- do.call(rbind, dayRawData)
     #only keep specified columns and time columns -> assuming time cols at the start
-    dayData <- dayData %>% select(c(1:nTimeCols, variableColNos))
-    names(dayData) <- c(timeColFormat , variables)
+    dayData <- dayData %>% select(c(1:nTimeCols, as.numeric(vars['variableColNos', ])))
+    names(dayData) <- c(timeColFormat , vars['variables', ])
     # reformat time to be as posixct
-    dayData <- formatTimeCol(dayData, timeColFormat, variables, Tinfo)
+    dayData <- formatTimeCol(dayData, timeColFormat, vars['variables', ], Tinfo)
 
     #pad data
     # what happens when no data for day
@@ -115,3 +130,5 @@ readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
   }
   return(rawDataList)
 }
+
+

@@ -1,32 +1,34 @@
-makeTSGrid <- function(allData, variables, tickBreaks, dateLabelFormat,
-                       title){
-  plotList = list()
-  for (i in 1:length(variables)){
-    plotList[[i]] <- ggplot(data = allData) +
-      geom_line(aes_string('TIME', variables[i])) +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
-      scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat) +
-      xlab(paste('Time (', dateLabelFormat , ')'))
+makeTSGrid <- function(allData, tickBreaks, dateLabelFormat,
+                       title = NA, SAVEplot = FALSE, SAVEname = NA){
+
+  if(is.list(allData)){
+    #plotList is a list containing a time series for every variable
+    plotList <- makePlotListL(allData, tickBreaks, dateLabelFormat)
+  } else {
+    #plotList is a list containing a time series for every variable
+    plotList <- makePlotListDF(allData, tickBreaks, dateLabelFormat)
   }
 
-  if (length(variables) <= 2 ){
-    nc <- 1
-  } else if (length(variables) > 2 &  length(variables) <= 6){
-    nc <- 2
-  } else if (length(variables) > 6){
-    nc <- 3
-  }
 
+  # the number of columns in the grid_plot
+  nc <- getNoCols(variables)
+  # get a grid plot of plotlist
   plotsGrid <- plot_grid(plotlist = plotList, ncol = nc)
-
+  # get the relative heights -> the title should be much smaller than the plots
   relH <- c(0.1, rep(1, nc))
-
+  if (is.na(title) ){
+    title <- makeTitle(instrument, fileTimeRes, startDate, endDate)
+  }
+  # create the users specified title
   gridTitle <- ggdraw() + draw_label(title)
+  # final plot includes the plot title
   finalPlot <- plot_grid(gridTitle, plotsGrid, ncol = 1, rel_heights = relH)
-
+  #save the final plot if specified
   if (SAVEplot == TRUE){
     ggsave(SAVEname, finalPlot)
   }
+
+  return(finalPlot)
 }
 
 
