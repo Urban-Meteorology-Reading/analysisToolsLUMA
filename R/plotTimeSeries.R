@@ -1,14 +1,17 @@
 makeTSGrid <- function(allData, tickBreaks, dateLabelFormat,
                        title = NA, SAVEplot = FALSE, SAVEname = NA){
 
-  if(is.list(allData)){
-    #plotList is a list containing a time series for every variable
+  require(ggplot2)
+  require(cowplot)
+  #plotList is a list containing a time series for every variable
+  if(class(allData) == 'data.frame'){
+    #if dataframe then no units will be on plot
+    plotList <- makePlotListDF(allData, tickBreaks, dateLabelFormat)
+  } else if (class(allData) == 'list'){
     plotList <- makePlotListL(allData, tickBreaks, dateLabelFormat)
   } else {
-    #plotList is a list containing a time series for every variable
-    plotList <- makePlotListDF(allData, tickBreaks, dateLabelFormat)
+    stop(paste('Invalid class:', class(allData), '. allData must be either class "list" or "data.frame"'))
   }
-
 
   # the number of columns in the grid_plot
   nc <- getNoCols(variables)

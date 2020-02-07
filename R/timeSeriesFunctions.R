@@ -1,8 +1,11 @@
 makePlotListDF <- function(allData, tickBreaks, dateLabelFormat){
+  #get the vars to plot
+  plotVars <- names(allData)[names(allData) != 'TIME']
+  #add plots of every variable to a plot list
   plotList = list()
-  for (i in 1:length(names(allData))){
+  for (i in 1:length(plotVars)){
     plotList[[i]] <- ggplot(data = allData) +
-      geom_line(aes_string('TIME', names(allData)[i])) +
+      geom_line(aes_string('TIME', plotVars[i])) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
       scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat) +
       xlab(paste('Time (', dateLabelFormat , ')'))
@@ -11,23 +14,27 @@ makePlotListDF <- function(allData, tickBreaks, dateLabelFormat){
 }
 
 makePlotListL <- function(allData, tickBreaks, dateLabelFormat){
-
+  #separate data and units
   df <- allData[['data']]
   units <- allData[['units']]
-
+  # get the variables that are going to be plot
+  plotVars <- names(df)[names(df) != 'TIME']
+  #add plots of every variable to a plot list
   plotList = list()
-  for (i in 1:length(names(df))){
+  for (i in 1:length(plotVars)){
+    varUnit <- units[units[, 'variables'] == plotVars[i], 'units']
     plotList[[i]] <- ggplot(data = df) +
-      geom_line(aes_string('TIME', names(df)[i])) +
+      geom_line(aes_string('TIME', plotVars[i])) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
       scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat) +
       xlab(paste('Time (', dateLabelFormat , ')')) +
-      ylab(paste())
+      ylab(paste(plotVars[i], '(', varUnit, ')'))
   }
   return(plotList)
 }
 
 getNoCols <- function(variables){
+  # get the number of columns in grid plot just via the number of variables
   if (length(variables) <= 2 ){
     nc <- 1
   } else if (length(variables) > 2 &  length(variables) <= 6){

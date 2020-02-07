@@ -28,4 +28,6 @@ allData <- getRawDF(startDate, endDate, fileTimeRes, sep,
 tickBreaks <- '6 hours'
 dateLabelFormat <- '%j %H:%M'
 
-finalPlot <- makeTSGrid(allData, variables, tickBreaks, dateLabelFormat)
+finalPlot <- makeTSGrid(allData, tickBreaks, dateLabelFormat)
+
+ggsave("/home/users/sws17m2/kitMiniTemp/images/gilTest.png", finalPlot)

@@ -1,6 +1,7 @@
-getRawDF <- function(startDate, endDate, fileTimeRes, sep,
+getRawDF <- function(instrument, startDate, endDate, fileTimeRes, sep,
                      variableColNos, variables, timeColFormat,
                      nTimeCols){
+  require(stringr)
   #create a list of dates to be run
   dateList <- createDateList(startDate, endDate)
   # separate the resolution and unit of file res

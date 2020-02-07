@@ -1,11 +1,5 @@
 ##chek that n time cols == length of cols format
 
-createDateList <- function(startDate, endDate){
-  # get a vector of all dates to get data for
-  dateList <- seq(startDate, endDate, by = 'day')
-  return(dateList)
-}
-
 readRawData <- function(x, separator, classCols){
   # read in data
   if (file.exists(x)){
@@ -21,19 +15,6 @@ readRawData <- function(x, separator, classCols){
     print(paste('File:', x, 'doesnt exist'))
     return(NA)
   }
-}
-
-getFileRes <- function(fileTimeRes){
-  #get the file res as a number and a unit
-  fileResList = list()
-  fileResList[['Res']] <- readr::parse_number(fileTimeRes)
-  fileResList[['Unit']] <- str_remove(fileTimeRes, as.character(fileResList[['Res']]))
-  # check if it's one of the valid units
-  if (fileResList$Unit != 'Min' &  fileResList$Unit != 'Sec' &
-      fileResList$Unit != 'Hz'){
-    stop(paste('Invalid fileTimeRes unit:', fileResList$Unit, 'valid units are: "Min", "Sec" and "Hz"'))
-  }
-  return(fileResList)
 }
 
 getClassCols <- function(nTimeCols){
@@ -95,7 +76,9 @@ getUnits <- function(variables, variableColNos){
   units <- unlist(lapply(variables, function(x){
     return(varInfo[varInfo$id == x, ]$unit)
   }))
-  vars <- rbind(variables, units, variableColNos)
+  vars <- as.data.frame(cbind(variables, units, variableColNos),
+                        stringsAsFactors = FALSE)
+
   return(vars)
 }
 
@@ -119,10 +102,10 @@ readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
     #### what do if only 1 list entry
     dayData <- do.call(rbind, dayRawData)
     #only keep specified columns and time columns -> assuming time cols at the start
-    dayData <- dayData %>% select(c(1:nTimeCols, as.numeric(vars['variableColNos', ])))
-    names(dayData) <- c(timeColFormat , vars['variables', ])
+    dayData <- dayData %>% select(c(1:nTimeCols, as.numeric(vars[, 'variableColNos'])))
+    names(dayData) <- c(timeColFormat , vars[, 'variables'])
     # reformat time to be as posixct
-    dayData <- formatTimeCol(dayData, timeColFormat, vars['variables', ], Tinfo)
+    dayData <- formatTimeCol(dayData, timeColFormat, vars[, 'variables'], Tinfo)
 
     #pad data
     # what happens when no data for day
