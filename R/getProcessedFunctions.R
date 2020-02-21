@@ -1,5 +1,6 @@
-getInstOutDef <- function(instrument, startDate, fileTimeRes){
+getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   #get the output definitions for the instrument specified
+  print('Getting output definitions from metadata site...')
 
   # we are assuming the out def doesn't change throughout the period
   startTinfo <- lf_Tinfo(as.Date(startDate))
@@ -11,41 +12,61 @@ getInstOutDef <- function(instrument, startDate, fileTimeRes){
   #### check for multiple serials at site
 
   #get the output definitions for this serial
-  instOutDef <- lf_getOutputDef(instSerial, startTinfo, instrument$level)
+  instOutDef <- lf_getOutputDef(instSerial, startTinfo, level)
 
-  #decide which time res
-  if (any(grepl(fileTimeRes, names(instOutDef)))){
-    instOutDef <- instOutDef[[names(instOutDef)[grepl(fileTimeRes,
-                                                      names(instOutDef))]]]
-  } else if (ECpack == TRUE){
-    instOutDef <- instOutDef[[names(instOutDef)[grepl('ECpack',
-                                                      names(instOutDef))]]]
+  # decide which output def to use based on the file time res and if is ECpack
+  instOutDefVals <- selectOutDef(fileTimeRes, instrument, instOutDef)
+
+  return(instOutDefVals)
+}
+
+selectOutDef <- function(fileTimeRes, instrument, instOutDef){
+  #select the output definition based on the file time res
+  # if only one name available use this
+  if (length(instOutDef) == 1) {
+    instOutDefVals <- instOutDef[[1]]
+  } else if ('ECpack' %in% names(instrument) & instrument$ECpack == TRUE) {
+    # if more than 1 check for EC pack output defs
+    instOutDefVals <- instOutDef[[names(instOutDef)[grepl('ECpack',
+                                                          names(instOutDef))]]]
+  } else if (any(grepl(fileTimeRes, names(instOutDef)))){
+    # if theres an ouput def for the file time res
+    instOutDefVals <- instOutDef[[names(instOutDef)[grepl(fileTimeRes,
+                                                          names(instOutDef))]]]
   } else {
-    instOutDef <- instOutDef[[instrument$id]]
+    #otherwise try to use the instrument id
+    instOutDefVals <- instOutDef[[instrument$id]]
   }
 
-  return(instOutDef)
+  #give error if none are satisfied
+  if (is.null(instOutDefVals)){
+    stop(paste('Could not select suitable output definition from the available
+                options:', paste(names(instOutDef), collapse = ',')))
+  }
+
+  return(instOutDefVals)
 }
 
 getVarUnits <- function(instOutDef, variables){
   # get variable units from the instrument output definitions
+  print('Getting variable units from metadata site...')
+
   varUnits <- data.frame(instOutDef$variables, stringsAsFactors = FALSE) %>%
-    filter(ID %in% variables) %>% select(ID, Unit)
+    dplyr::filter(ID %in% variables) %>% dplyr::select(ID, Unit)
 
   names(varUnits) <- c('variables', 'units')
 
   return(varUnits)
 }
 
-createReplacementVec <- function(DATE, instrument, replacementVec, instOutDef){
+createReplacementVec <- function(DATE, instrument, level, replacementVec, instOutDef){
   #the placeholders in the path need to be replaced with actual information from here
-  browser()
   replacementVec <- c(replacementVec, '%Y' = strftime(DATE, '%Y'))
   replacementVec <- c(replacementVec, '%j' = strftime(DATE, '%j'))
   replacementVec <- c(replacementVec, '%d' = strftime(DATE, '%d'))
   replacementVec <- c(replacementVec, '%m' = strftime(DATE, '%m'))
 
-  replacementVec <- c(replacementVec, '%LEVEL' = paste0('L',instrument$level))
+  replacementVec <- c(replacementVec, '%LEVEL' = paste0('L',level))
   replacementVec <- c(replacementVec, '%CITY' = instOutDef$header[['City', 2]])
   replacementVec <- c(replacementVec, '%SITE' = instrument$site)
 
@@ -80,14 +101,13 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
 missingDay <- function(DATE, variables, fileResList){
   #get the start and end of the day
   daystart <- as.POSIXct(DATE)
-  dayend <- daystart + (60*60*24)
-  # create a list of all times in the day at file resolution
+  # create a list of all times in the day at file resolution filled with na
   if ( fileResList$Unit == 'Hz' ){
-    daystart <- daystart + 1/fileResList$Res
+    dayend <- daystart + (60*60*24) - (1/fileResList$Res)
     timesInDay <- seq(daystart, dayend, by= 1/fileResList$Res)
   # assume it must be mins
   } else {
-    daystart <- daystart +  fileResList$Res*60
+    dayend <- daystart + (60*60*24) - (fileResList$Res*60)
     timesInDay <- seq(daystart, dayend, by= fileResList$Res*60)
   }
 
@@ -99,8 +119,8 @@ missingDay <- function(DATE, variables, fileResList){
   return(varDayData)
 }
 
-getNCDFData <- function(dateList, instrument, dataDirForm, instOutDef,
-                        filePre, fileTimeRes, fileTimeResList, variables){
+getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
+                        filePre, fileTimeRes, fileResList, variables){
   varDayList <- list()
   #for every date
   for (idate in 1:length(dateList)){
@@ -108,18 +128,18 @@ getNCDFData <- function(dateList, instrument, dataDirForm, instOutDef,
 
     #replace the basedir placeholders with actual information
     replacementVec <- c()
-    replacementVec <- createReplacementVec(DATE, instrument,
+    replacementVec <- createReplacementVec(DATE, instrument, level,
                                            replacementVec, instOutDef)
     dataDir <- stringr::str_replace_all(dataDirForm, replacementVec)
     #get the files we want to read
     dayFile <- chooseFiles(dataDir, filePre, fileTimeRes)
 
-    if (length(dayFile) >0 ){
-      print(paste('Opening: ', file.path(dataDir, dayFile)))
+    if (length(dayFile) > 0 ){
+      print(paste('Reading file: ', file.path(dataDir, dayFile)))
       #open the file and get the variables into a dataframe
       varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
     } else {
-      print(paste('File for', date, 'doesnt exist'))
+      print(paste('File for', DATE, 'doesnt exist'))
       #fill dataframes for missing files with NA
       varDayData <- missingDay(DATE, variables, fileResList)
     }

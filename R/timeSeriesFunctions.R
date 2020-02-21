@@ -33,22 +33,46 @@ makePlotListL <- function(allData, tickBreaks, dateLabelFormat){
   return(plotList)
 }
 
-getNoCols <- function(variables){
+getNoCols <- function(nVariables){
   # get the number of columns in grid plot just via the number of variables
-  if (length(variables) <= 2 ){
+  if (nVariables <= 3 ){
     nc <- 1
-  } else if (length(variables) > 2 &  length(variables) <= 6){
+  } else if (nVariables > 3 &  nVariables <= 6){
     nc <- 2
-  } else if (length(variables) > 6){
+  } else if (nVariables > 6){
     nc <- 3
   }
   return(nc)
 }
 
-makeTitle <- function(instrument, fileTimeRes, startDate, endDate){
+makeTitle <- function(level, instrument, fileTimeRes, startDate, endDate){
+  # paste L with level number
+  if (level == 'RAW'){
+    lev <- level
+  } else { lev <- paste0('L', level)}
+
   # construct a default title
-  title <- paste(instrument$id, '|', instrument$site, '|', instrument$level,
+  title <- paste(instrument$id, '|', instrument$site, '|', lev,
                  '|', fileTimeRes, '|', as.character(startDate),
                  '-', as.character(endDate))
   return(title)
+}
+
+savePlot <- function(SAVEpath, SAVEname, finalPlot, SAVEsize){
+  #save a plot
+  print(paste('Saving plot as', SAVEname))
+
+  #create the directory in save path i
+  if (!is.null(SAVEpath) & !dir.exists(SAVEpath)){
+    dir.create(SAVEpath, recursive = TRUE)
+  }
+  #if size not specified use the default
+  if (all(is.na(SAVEsize))){
+    ggsave(SAVEname, finalPlot)
+  #otherwise make it savesize
+  } else {
+    ggsave(SAVEname, finalPlot, path = SAVEpath,
+           width = as.numeric(SAVEsize[['w']]),
+           height = as.numeric(SAVEsize[['h']]),
+           units = SAVEsize[['unit']])}
 }

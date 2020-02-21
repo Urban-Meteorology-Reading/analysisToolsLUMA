@@ -33,11 +33,12 @@ formatTimeCol <- function(dayData, timeColFormat, variables, Tinfo){
   dtFormat <- paste('%Y', paste(timeColFormat, collapse = ' '))
 
   # paste all time cols together
-  dtObjs <- apply(dayData[, timeColFormat] , 1 , paste, collapse=" ")
+  #browser()
+  dtObjs <- apply(array(dayData[, timeColFormat]) , 1 , paste, collapse=" ")
   #paste with year and convert to posixct
-  dayData <- dayData %>% mutate(TIME = paste(Tinfo['tD', 'YEAR'], dtObjs)) %>%
-    mutate(TIME = as.POSIXct(TIME, format = dtFormat)) %>%
-    select(c('TIME', variables) )
+  dayData <- dayData %>% dplyr::mutate(TIME = paste(Tinfo['tD', 'YEAR'], dtObjs)) %>%
+    dplyr::mutate(TIME = as.POSIXct(TIME, format = dtFormat)) %>%
+    dplyr::select(c('TIME', variables) )
 
   return(dayData)
 }
@@ -50,10 +51,10 @@ padData <- function(Tinfo, fileResList, dayData){
   if (fileResList$Unit == 'Hz') {
     startDate <- as.POSIXct(paste(Tinfo['tD', 'YD'], '00:00:00.0'), format = '%Y%j %H:%M:%OS') + (1/fileResList$Res)
     allTimes <- seq(startDate, endDate, by = 1/fileResList$Res)
-  } else if (fileResList$Unit == 'Sec'){
+  } else if (fileResList$Unit == 'sec'){
     startDate <- as.POSIXct(Tinfo['tD', 'YD'], format = '%Y%j') + fileResList$Res
     allTimes <- seq(startDate, endDate, by = fileResList$Res)
-  } else if (fileResList$Unit == 'Min'){
+  } else if (fileResList$Unit == 'min'){
     startDate <- as.POSIXct(Tinfo['tD', 'YD'], format = '%Y%j') + (fileResList$Res *60)
     allTimes <- seq(startDate, endDate, by = fileResList$Res * 60)
   }
@@ -68,6 +69,7 @@ padData <- function(Tinfo, fileResList, dayData){
 
 getUnits <- function(variables, variableColNos){
   # get the units for the variable from the metadata system
+  print('Getting variable units from metadata site...')
   varInfo <- lf_getVariables()
 
   ### add chech here ###
@@ -83,15 +85,15 @@ getUnits <- function(variables, variableColNos){
 }
 
 readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
-                         vars, timeColFormat ,
-                         nTimeCols, fileResList){
+                         vars, timeColFormat, fileResList){
   rawDataList <- list()
+  #find the number of time columns
+  nTimeCols <- length(timeColFormat)
   # for every date
   for (idate in 1:length(dateList)){
     DATE <- dateList[idate]
     # get Metadata for this date for this sensor
     Tinfo <- lf_Tinfo(as.Date(DATE))
-    print(Tinfo['tD', ])
     sensorInfo <- lf_sensorINFO(instrument$site, instrument$id, Tinfo)
     rawFiles <- sensorInfo$rawFiles[[1]]
 
@@ -102,7 +104,7 @@ readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
     #### what do if only 1 list entry
     dayData <- do.call(rbind, dayRawData)
     #only keep specified columns and time columns -> assuming time cols at the start
-    dayData <- dayData %>% select(c(1:nTimeCols, as.numeric(vars[, 'variableColNos'])))
+    dayData <- dayData %>% dplyr::select(c(1:nTimeCols, as.numeric(vars[, 'variableColNos'])))
     names(dayData) <- c(timeColFormat , vars[, 'variables'])
     # reformat time to be as posixct
     dayData <- formatTimeCol(dayData, timeColFormat, vars[, 'variables'], Tinfo)
