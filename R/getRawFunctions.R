@@ -104,7 +104,10 @@ readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
     #### what do if only 1 list entry
     dayData <- do.call(rbind, dayRawData)
     #only keep specified columns and time columns -> assuming time cols at the start
-    dayData <- dayData %>% dplyr::select(c(1:nTimeCols, as.numeric(vars[, 'variableColNos'])))
+    #davis data was pasting \032 in front so get rid of this
+    dayData <- dayData %>% dplyr::select(c(1:nTimeCols, as.numeric(vars[, 'variableColNos']))) %>%
+      dplyr::mutate(V1 = stringr::str_replace_all(V1, '\032', ''))
+
     names(dayData) <- c(timeColFormat , vars[, 'variables'])
     # reformat time to be as posixct
     dayData <- formatTimeCol(dayData, timeColFormat, vars[, 'variables'], Tinfo)
