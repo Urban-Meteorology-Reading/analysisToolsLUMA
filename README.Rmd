@@ -1,4 +1,15 @@
 # analysisToolsLUMA
 
+Functions that can be used to analyse and check LUMA observation data.
+
+## Installation
+
+```{r inst}
+
+devtools::install_github('kitbenjamin/analysisToolsLUMA') 
+
+```
+
+## Plotting time series of instrument variables 
 
 
