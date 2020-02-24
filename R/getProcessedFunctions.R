@@ -80,6 +80,7 @@ chooseFiles <- function(dataDir, filePre, fileTimeRes){
   if(length(dayFile) > 1){
     dayFile <- dayFile[grepl(fileTimeRes, dayFile)]
   }
+  return(dayFile)
 }
 
 readNCDF <- function(dataDir, dayFile, variables, DATE){
