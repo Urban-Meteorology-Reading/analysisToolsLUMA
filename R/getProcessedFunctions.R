@@ -24,19 +24,20 @@ selectOutDef <- function(fileTimeRes, instrument, instOutDef){
   #select the output definition based on the file time res
   # if only one name available use this
   if (length(instOutDef) == 1) {
-    instOutDefVals <- instOutDef[[1]]
-  } else if ('ECpack' %in% names(instrument) & instrument$ECpack == TRUE) {
+    odInd <- 1
+  } else if ('ECpack' %in% names(instrument) && instrument$ECpack == TRUE) {
     # if more than 1 check for EC pack output defs
-    instOutDefVals <- instOutDef[[names(instOutDef)[grepl('ECpack',
-                                                          names(instOutDef))]]]
+    odInd <- names(instOutDef)[grepl('ECpack', names(instOutDef))]
   } else if (any(grepl(fileTimeRes, names(instOutDef)))){
     # if theres an ouput def for the file time res
-    instOutDefVals <- instOutDef[[names(instOutDef)[grepl(fileTimeRes,
-                                                          names(instOutDef))]]]
+    odInd <- names(instOutDef)[grepl(fileTimeRes,names(instOutDef))]
   } else {
     #otherwise try to use the instrument id
-    instOutDefVals <- instOutDef[[instrument$id]]
+    odInd <- which(names(instOutDef) == instrument$id)
   }
+
+  print(paste('Using output definition:', names(instOutDef)[[odInd]]))
+  instOutDefVals <- instOutDef[[odInd]]
 
   #give error if none are satisfied
   if (is.null(instOutDefVals)){

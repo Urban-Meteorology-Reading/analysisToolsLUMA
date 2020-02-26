@@ -6,6 +6,8 @@ makePlot <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
   require(ggplot2)
   require(cowplot)
 
+  print('Plotting data...')
+
   #plotList is a list containing a time series for every variable
   if(class(allData) == 'data.frame'){
     #if dataframe then no units will be on plot
