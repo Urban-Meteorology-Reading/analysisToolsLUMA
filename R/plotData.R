@@ -69,6 +69,7 @@ plotData <- function(instrument, level, startDate, endDate, fileTimeRes, variabl
                    tickBreaks, dateLabelFormat, sep = NA, variableColNos = NA,
                    timeColFormat = NA, title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
+  print('is this updating')
   # get the data
   allData <- makeDF(instrument, level, startDate, endDate, fileTimeRes, variables,
                     sep, variableColNos, timeColFormat)
