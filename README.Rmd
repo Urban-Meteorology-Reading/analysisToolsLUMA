@@ -33,8 +33,20 @@ instrument <- list(id = 'SWTWXSTATION', site = 'SWT') #define the id and site as
 level <- 'RAW' 
 startDate <- as.Date('2020-02-27') #start and end date must be class 'Date'
 endDate <- as.Date('2020-02-27')
+variables <- c('Tair', 'RH', 'dir', 'WS') # these must also be consistent with the metadata system
+tickBreaks <- '2 hours' # where ticks will be on the plot
+dateLabelFormat <- '%H:%M' #how the time axis will be formatted
+sep <- ',' #the separator in the file
+variableColNos = c(2, 10, 8, 5) # what column is each variable represented by
+timeColFormat = '%Y-%m-%d %H:%M:%S' # format of the time column
 ```
+Now plot the data
 
+```{r plotwxt, eval=FALSE}
+
+rawWXTPlot <- plotData(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat) 
+
+```
 
 Take the example of this Microlite data from /storage/basic/micromet/Tier_raw/RAW/2020/London/microlite/02
 
