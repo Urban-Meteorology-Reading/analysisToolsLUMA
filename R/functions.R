@@ -9,6 +9,7 @@ getFileRes <- function(fileTimeRes){
   fileResList = list()
   fileResList[['Res']] <- readr::parse_number(fileTimeRes)
   fileResList[['Unit']] <- str_remove(fileTimeRes, as.character(fileResList[['Res']]))
+  print(fileResList)
   # check if it's one of the valid units
   if (fileResList$Unit != 'min' &  fileResList$Unit != 'sec' &
       fileResList$Unit != 'Hz'){

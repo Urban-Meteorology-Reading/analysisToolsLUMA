@@ -1,6 +1,18 @@
+#' Title
+#'
+#' @param instrumentID
+#' @param layerName
+#' @param DATE
+#' @param outDir
+#'
+#' @return
+#' @export
+#'
+#' @examples
 makeSitePositionKML <- function(instrumentID, layerName, DATE = Sys.Date(), outDir = getwd()){
   require(rgdal)
   source(Sys.getenv('MM_LUMAfun'))
+
   #get the Tinfo
   Tinfo <- lf_Tinfo(DATE)
   #find the instruments running on that day

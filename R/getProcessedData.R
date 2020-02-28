@@ -1,4 +1,4 @@
-getProcessedDF <- function(instrument, level, startDate, endDate, fileTimeRes,
+getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
                            variables){
   require(ncdf4)
   require(stringr)
@@ -12,6 +12,8 @@ getProcessedDF <- function(instrument, level, startDate, endDate, fileTimeRes,
 
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
+
+  print(instrument)
 
   print(paste('Creating dataframe of', paste(variables, collapse = ', '),
               'for', instrument$id, 'at site', instrument$site, 'for level',
@@ -39,6 +41,8 @@ getProcessedDF <- function(instrument, level, startDate, endDate, fileTimeRes,
   #bind list elements
   allDataDf <- do.call(rbind, varDataList)
   allDataDf <- allDataDf[is.na(allDataDf['TIME']) == FALSE, ]
+  # get rid of error when weird data leads to crazy time values
+  allDataDf <- allDataDf[as.numeric(allDataDf$TIME) < 1e100,]
 
   #add units to data
   allData <- list(data = allDataDf, units = varUnits)
