@@ -9,13 +9,14 @@ plotData(
   level,
   startDate,
   endDate,
-  fileTimeRes,
   variables,
   tickBreaks,
   dateLabelFormat,
+  fileTimeRes = NA,
   sep = NA,
   variableColNos = NA,
   timeColFormat = NA,
+  skipRows = 0,
   title = NA,
   SAVEplot = FALSE,
   SAVEname = NA,
@@ -32,9 +33,6 @@ consistent with the LUMA metadata system.}
 
 \item{startDate, endDate}{Start and end date of plot. Should be of class date.}
 
-\item{fileTimeRes}{Time resolution of file this should be consistent with file
-names on the cluster e.g. 1min}
-
 \item{variables}{A string or vector of strings of the variables to plot.
 These must be consisted with variables on LUMA metadata website.}
 
@@ -46,6 +44,9 @@ date_breaks for valid options.}
 with Hour and Minute separated by : . See date_labels in link above for valid
 options.}
 
+\item{fileTimeRes}{Time resolution of file this should be consistent with file
+names on the cluster e.g. 1min. Only needed when level is not RAW.}
+
 \item{sep}{If data is RAW then what is data separated by e.g. ','.}
 
 \item{variableColNos}{If data is RAW then a vector of the position of the variable
@@ -53,6 +54,8 @@ to be plotted.}
 
 \item{timeColFormat}{The format of time columns. A string or vector of strings
 if multiple time columns.}
+
+\item{skipRows}{How many rows to skip when reading raw file. Default is none.}
 
 \item{title}{The title of the plot. If not specified then a default will be
 generated based on information given.}
