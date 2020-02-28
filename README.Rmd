@@ -4,12 +4,45 @@ Functions that can be used to analyse and check LUMA observation data.
 
 ## Installation
 
-```{r inst}
+```{r install, eval=FALSE}
 
 devtools::install_github('kitbenjamin/analysisToolsLUMA') 
 
 ```
+## dependencies
 
-## Plotting time series of instrument variables 
 
+## Plotting time series of instrument variables
+
+Checking time series of data can be useful in diagnosing when, and at what stage of processing, something has gone wrong. *plotData()* will plot raw and processed data.
+
+### Example 1: plotting raw data
+
+Take the simple example of plotting one day of SWT metdata data from /storage/basic/micromet/Tier_raw/RAW/2020/London/SWT/MetData/02
+
+```{r seeMetData}
+
+readLines('data/20200227_SWT_MetData.dat', n = 5)
+
+```
+To plot this we need to define several variables
+
+```{r defineVars}
+
+instrument <- list(id = 'SWTWXSTATION', site = 'SWT') #define the id and site as it's listed on the metadata site
+level <- 'RAW' 
+startDate <- as.Date('2020-02-27') #start and end date must be class 'Date'
+endDate <- as.Date('2020-02-27')
+```
+
+
+Take the example of this Microlite data from /storage/basic/micromet/Tier_raw/RAW/2020/London/microlite/02
+
+```{r seeData}
+
+readLines('data/9178815_2020-02-27.txt', n = 20)
+
+```
+
+To plot this day of data we need to define several variables
 

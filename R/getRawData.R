@@ -1,4 +1,4 @@
-getRawDF <- function(instrument, level, startDate, endDate, sep,
+getRawData <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
                      variableColNos, variables, timeColFormat, skipRows){
   require(stringr)
   require(dplyr)
@@ -12,7 +12,9 @@ getRawDF <- function(instrument, level, startDate, endDate, sep,
   #create a list of dates to be run
   dateList <- createDateList(startDate, endDate)
   # get file time res from metadata and separate the resolution and unit of file res
-  fileResList <- getFileResFromMeta(startDate, instrument)
+  if (is.na(fileTimeRes)){
+    fileResList <- getFileResFromMeta(startDate, instrument)
+  } else {fileResList <- getFileRes(fileTimeRes)}
 
   print(paste('Creating dataframe of', paste(variables, collapse = ', '),
               'for', instrument$id, 'at site', instrument$site, 'for level',

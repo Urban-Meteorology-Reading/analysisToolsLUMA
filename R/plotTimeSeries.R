@@ -1,4 +1,26 @@
-makePlot <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
+#' Create a time series from a dataframe or output equivalent to that from getLUMAdata.
+#'
+#' @param allData
+#' @param tickBreaks
+#' @param dateLabelFormat
+#' @param lvl
+#' @param inst
+#' @param fileTRes
+#' @param title The title of the plot. If not specified then a default will be
+#' generated based on information given.
+#' @param SAVEplot Boolean whether to save the plot.
+#' @param SAVEname The name of the plot if SAVEplot = TRUE
+#' @param SAVEpath The path to folder in which plot should be saved. Leave as null
+#' to save in current working directory.
+#' @param SAVEsize The size the save the image. This is a 3D vector consisting of
+#' h (height), w (width) and unit. See https://ggplot2.tidyverse.org/reference/ggsave.html
+#' for valid units.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotTimeSeries <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
                      inst = NA, fileTRes = NA, title = NA,
                      SAVEplot = FALSE, SAVEname = NA, SAVEpath = NULL,
                      SAVEsize = NA){

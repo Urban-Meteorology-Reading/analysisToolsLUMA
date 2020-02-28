@@ -1,4 +1,4 @@
-#' Plot raw or processed data for multiple variables.
+#' Plot raw or processed LUMA data for multiple variables.
 #'
 #' @param instrument A list containing the instrument name an site in the form
 #' list(id = "INSTID", site = "SITENAME"). INSTID and SITENAME should be
@@ -66,17 +66,17 @@
 #'               SAVEname = SAVEname, SAVEpath = SAVEpath,
 #'               SAVEsize = SAVEsize)
 
-plotData <- function(instrument, level, startDate, endDate, variables,
+plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    tickBreaks, dateLabelFormat, fileTimeRes = NA,  sep = NA, variableColNos = NA,
                    timeColFormat = NA, skipRows = 0, title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
 
     # get the data
-  allData <- makeDF(instrument, level, startDate, endDate, variables, fileTimeRes,
+  allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
                     sep, variableColNos, timeColFormat, skipRows)
 
   # plot the data
-  finalPlot <- makePlot(allData, tickBreaks, dateLabelFormat, level, instrument,
+  finalPlot <- plotTimeSeries(allData, tickBreaks, dateLabelFormat, level, instrument,
                           fileTimeRes, title, SAVEplot, SAVEname, SAVEpath,
                           SAVEsize)
 

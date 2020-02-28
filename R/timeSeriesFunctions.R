@@ -68,7 +68,7 @@ savePlot <- function(SAVEpath, SAVEname, finalPlot, SAVEsize){
   }
   #if size not specified use the default
   if (all(is.na(SAVEsize))){
-    ggsave(SAVEname, finalPlot)
+    ggsave(SAVEname, finalPlot, path = SAVEpath)
   #otherwise make it savesize
   } else {
     ggsave(SAVEname, finalPlot, path = SAVEpath,
