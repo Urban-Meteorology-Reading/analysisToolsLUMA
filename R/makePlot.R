@@ -24,8 +24,8 @@ makePlot <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
   plotsGrid <- plot_grid(plotlist = plotList, ncol = nc)
 
   # get the start and end date from data frame
-  startDate <- as.character(allData$data$TIME[[1]])
-  endDate <- as.character(as.Date(allData$data$TIME[[length(allData$data$TIME)]]))
+  startDate <- as.character(strftime(allData$data$TIME[[1]], '%Y-%m-%d'))
+  endDate <- as.character(strftime(as.Date(allData$data$TIME[[length(allData$data$TIME)]]), '%Y-%m-%d'))
 
   # get the relative heights -> the title should be much smaller than the plots
   relH <- c(0.1, rep(1, nc))
