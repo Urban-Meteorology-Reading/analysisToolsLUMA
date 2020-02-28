@@ -5,8 +5,6 @@
 #' consistent with the LUMA metadata system.
 #' @param level The quality level of the data. Either "RAW" or an integer.
 #' @param startDate,endDate Start and end date of plot. Should be of class date.
-#' @param fileTimeRes Time resolution of file this should be consistent with file
-#' names on the cluster e.g. 1min
 #' @param variables A string or vector of strings of the variables to plot.
 #' These must be consisted with variables on LUMA metadata website.
 #' @param tickBreaks How often ticks should appear on plots. e.g. 6 hours.
@@ -15,11 +13,14 @@
 #' @param dateLabelFormat The format of date labels e.g. %H:%M to have time labels
 #' with Hour and Minute separated by : . See date_labels in link above for valid
 #' options.
+#' @param fileTimeRes Time resolution of file this should be consistent with file
+#' names on the cluster e.g. 1min. Only needed when level is not RAW.
 #' @param sep If data is RAW then what is data separated by e.g. ','.
 #' @param variableColNos If data is RAW then a vector of the position of the variable
 #' to be plotted.
 #' @param timeColFormat The format of time columns. A string or vector of strings
 #' if multiple time columns.
+#' @param skipRows How many rows to skip when reading raw file. Default is none.
 #' @param title The title of the plot. If not specified then a default will be
 #' generated based on information given.
 #' @param SAVEplot Boolean whether to save the plot.
@@ -65,14 +66,14 @@
 #'               SAVEname = SAVEname, SAVEpath = SAVEpath,
 #'               SAVEsize = SAVEsize)
 
-plotData <- function(instrument, level, startDate, endDate, fileTimeRes, variables,
-                   tickBreaks, dateLabelFormat, sep = NA, variableColNos = NA,
-                   timeColFormat = NA, title = NA, SAVEplot = FALSE,
+plotData <- function(instrument, level, startDate, endDate, variables,
+                   tickBreaks, dateLabelFormat, fileTimeRes = NA,  sep = NA, variableColNos = NA,
+                   timeColFormat = NA, skipRows = 0, title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
-  print('is this updating')
-  # get the data
-  allData <- makeDF(instrument, level, startDate, endDate, fileTimeRes, variables,
-                    sep, variableColNos, timeColFormat)
+
+    # get the data
+  allData <- makeDF(instrument, level, startDate, endDate, variables, fileTimeRes,
+                    sep, variableColNos, timeColFormat, skipRows)
 
   # plot the data
   finalPlot <- makePlot(allData, tickBreaks, dateLabelFormat, level, instrument,

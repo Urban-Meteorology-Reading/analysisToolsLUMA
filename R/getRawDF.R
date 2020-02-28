@@ -1,25 +1,29 @@
-getRawDF <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
-                     variableColNos, variables, timeColFormat){
+getRawDF <- function(instrument, level, startDate, endDate, sep,
+                     variableColNos, variables, timeColFormat, skipRows){
   require(stringr)
   require(dplyr)
   require(tidyr)
+  require(lubridate)
 
   source(Sys.getenv('MM_LUMAfun'))
 
-  print(paste('Creating dataframe of', paste(variables, collapse = ', '),
-              'for', instrument$id, 'at site', instrument$site, 'for level',
-              level, 'at time resolution', fileTimeRes, 'between',
-              as.character(startDate), 'and', as.character(endDate)))
-
+  #if only a serial number is supplied then get site and id
+  instrument <- checkSerialInfo(instrument, startDate)
   #create a list of dates to be run
   dateList <- createDateList(startDate, endDate)
-  # separate the resolution and unit of file res
-  fileResList <- getFileRes(fileTimeRes)
+  # get file time res from metadata and separate the resolution and unit of file res
+  fileResList <- getFileResFromMeta(startDate, instrument)
+
+  print(paste('Creating dataframe of', paste(variables, collapse = ', '),
+              'for', instrument$id, 'at site', instrument$site, 'for level',
+              level, 'at time resolution', paste0(fileResList$Res, fileResList$Unit),
+              'between', as.character(startDate), 'and', as.character(endDate)))
+
   #get the variable units from the metadata system
   vars <- getUnits(variables, variableColNos)
   #read and pad data
   rawDataList <- readRawFiles(dateList, instrument, fileTimeRes, sep,
-                              vars, timeColFormat, fileResList)
+                              vars, timeColFormat, fileResList, skipRows)
 
   #bind list elements
   allDataDf <- do.call(rbind, rawDataList)

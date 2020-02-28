@@ -5,6 +5,14 @@ getProcessedDF <- function(instrument, level, startDate, endDate, fileTimeRes,
   require(dplyr)
   source(Sys.getenv('MM_LUMAfun'))
 
+  # check file Time res is specified
+  if (is.na(fileTimeRes)){
+    stop('Please specify fileTimeRes')
+  }
+
+  #if only a serial number is supplied then get site and id
+  instrument <- checkSerialInfo(instrument, startDate)
+
   print(paste('Creating dataframe of', paste(variables, collapse = ', '),
               'for', instrument$id, 'at site', instrument$site, 'for level',
               level, 'at time resolution', fileTimeRes, 'between',
