@@ -10,7 +10,7 @@ makePlot <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
 
   #plotList is a list containing a time series for every variable
   if(class(allData) == 'data.frame'){
-    #if dataframe then no units will be on plot
+    #if dataframe: then no units will be on plot
     plotList <- makePlotListDF(allData, tickBreaks, dateLabelFormat)
   } else if (class(allData) == 'list'){
     plotList <- makePlotListL(allData, tickBreaks, dateLabelFormat)
