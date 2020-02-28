@@ -71,7 +71,7 @@ plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    timeColFormat = NA, skipRows = 0, title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
 
-    # get the data
+  # get the data
   allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
                     sep, variableColNos, timeColFormat, skipRows)
 

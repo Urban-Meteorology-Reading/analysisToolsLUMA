@@ -7,6 +7,8 @@ Functions that can be used to analyse and check LUMA observation data.
 
 ```r
 devtools::install_github('kitbenjamin/analysisToolsLUMA') 
+
+library(analysisToolsLUMA)
 ```
 ## dependencies
 
@@ -21,7 +23,7 @@ Take the simple example of plotting one day of SWT metdata data from /storage/ba
 
 
 ```r
-readLines('data/20200227_SWT_MetData.dat', n = 5)
+readLines('man/data/20200227_SWT_MetData.dat', n = 5)
 ```
 
 ```
@@ -50,14 +52,17 @@ Now plot the data
 
 
 ```r
-rawWXTPlot <- plotData(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat) 
+rawWXTPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat) 
 ```
 
-Take the example of this Microlite data from /storage/basic/micromet/Tier_raw/RAW/2020/London/microlite/02
+
+### Example 2: plotting raw data
+
+This time take the slightly more difficult example of this Microlite data from /storage/basic/micromet/Tier_raw/RAW/2020/London/microlite/02
 
 
 ```r
-readLines('data/9178815_2020-02-27.txt', n = 20)
+readLines('man/data/9178815_2020-02-27.txt', n = 20)
 ```
 
 ```
@@ -83,5 +88,66 @@ readLines('data/9178815_2020-02-27.txt', n = 20)
 ## [20] "27/02/2020,00:10:51,22.81,,26.16,,,,"
 ```
 
-To plot this day of data we need to define several variables
+Also, save the output to a plots directory
 
+
+```r
+instrument <- list(serial = '9178815') # use the serial number as there's multiple microlites at its site. Equally valid is instrument <- list(id = 'MICROLITE', site = 'BMH', serial = '9178815')
+level <- 'RAW' 
+startDate <- as.Date('2020-02-20') # plot a few days 
+endDate <- as.Date('2020-02-27')
+variables <- c('Tair_indoor', 'RH_indoor') 
+tickBreaks <- '12 hours' 
+dateLabelFormat <- '%j %H:%M' 
+sep <- ',' 
+variableColNos = c(3, 5) 
+timeColFormat = c('%d/%m/%Y', '%H:%M:%S') #time is now over 2 columns so timeColFormat must be a vector
+skipRows <- 9 # the first 9 rows are headers
+title <- 'My microlite plot' # manually define title this time
+SAVEplot <- TRUE
+SAVEname <- 'MicroliteTS.png' # dont forget toadd the device (.png)
+SAVEpath <- 'man/plots'
+SAVEsize <- c(h = 8, w = 5, unit = 'in') # vector for height, width and unit. 
+```
+
+
+```r
+rawMicroPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat, skipRows = skipRows, title = title, SAVEplot = SAVEplot, SAVEname = SAVEname, SAVEpath = SAVEpath, SAVEsize = SAVEsize) 
+```
+
+### Example 3: plotting processed EC data
+
+Plotting processed data is even easier.
+Here we plot IMU eddy covariance data:
+
+
+```r
+instrument <- list(id = 'LI7500A', site = 'IMU', ECpack = TRUE) #omit EC pack to plot non-ECpack data 
+level <- 1 # as an integer
+startDate <- as.Date('2020-01-01') 
+endDate <- as.Date('2020-02-27')
+variables <- c('C_CO2', 'Q_E') 
+tickBreaks <- '7 days' # where ticks will be on the plot
+dateLabelFormat <- '%d-%m %H' #how the time axis will be formatted
+fileTimeRes = '30min' # for processed data the file time resolution must be manually defined as there's often several options.
+lOneLicorPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, fileTimeRes) 
+```
+
+plotLUMAdata() constists of 2 main functions that
+1. get the data
+2. plots the data
+
+These can each be done seperately using these two functions:
+
+```r
+allData <- getLUMAdata
+
+finalPlot <- plotTimeSeries
+```
+
+Use ?getLUMAdata() and ?plotTimeSeries for more details.
+
+Notes
+* doesn't deal with changes in site and time res
+* instrument can just be a serial number, or can be site, id and serial. I is faster to define site and ID.
+* for level RAW fileTimeRes can either be defined manually or it will be obtained from the metadata system
