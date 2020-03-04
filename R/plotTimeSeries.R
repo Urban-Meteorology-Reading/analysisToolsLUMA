@@ -26,7 +26,9 @@ plotTimeSeries <- function(allData, tickBreaks = NA, dateLabelFormat = NA, title
 
   print('Plotting data...')
 
-  checkSaveParams(SAVEname, SAVEsize)
+  if (SAVEplot = TRUE){
+     checkSaveParams(SAVEname, SAVEsize)
+  }
 
   if (class(allData) != 'list') {
     stop(paste('Invalid class:', class(allData), '. allData must be class "list"'))
