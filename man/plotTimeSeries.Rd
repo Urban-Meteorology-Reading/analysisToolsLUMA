@@ -6,11 +6,8 @@
 \usage{
 plotTimeSeries(
   allData,
-  tickBreaks,
-  dateLabelFormat,
-  lvl = NA,
-  inst = NA,
-  fileTRes = NA,
+  tickBreaks = NA,
+  dateLabelFormat = NA,
   title = NA,
   SAVEplot = FALSE,
   SAVEname = NA,

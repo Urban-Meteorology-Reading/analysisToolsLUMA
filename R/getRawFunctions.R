@@ -1,3 +1,10 @@
+checkRawArgs <- function(variables, variableColNos){
+  # check raw arguments
+  if (length(variables) != length(variableColNos)){
+    stop('Number of variables and variableColNos doesnt match' )
+  }
+}
+
 getFileResFromMeta <- function(startDate, instrument){
   # get the raw file time resolution from metadata system
 
@@ -31,22 +38,6 @@ getFileResFromMeta <- function(startDate, instrument){
   return(fileResList)
 }
 
-checkSerialInfo <- function(instrument, startDate){
-  # get a modified instrument list if only the serial number is supplied
-  startTinfo <- lf_Tinfo(startDate)
-  # check if only serial number supplied
-  if ('serial' %in% names(instrument) && any(!(c('id', 'site') %in% names(instrument)))){
-    print('Getting more metadata for instrument.')
-    # get site and id from metadata site
-    deployInfo <- lf_findDeploymentInfo(instrument$serial, startTinfo)
-    SITE <- as.character(deployInfo[[1]]$deploymentInfo$siteId)
-    ID <- as.character(deployInfo[[1]]$position$instrument)
-    instrument <- list(id = ID, site = SITE, serial = instrument$serial)
-  }
-
-  return(instrument)
-}
-
 readRawData <- function(x, separator, classCols, skipRows){
   # read in data
   if (file.exists(x)){
@@ -74,6 +65,21 @@ getClassCols <- function(nTimeCols){
   return(classCols)
 }
 
+checkTimeColFormat <- function(dtObjsOne, dtFormat){
+  #try and format first time into timecol format and give error if doesnt work
+  firstTryDate <- paste(Tinfo['tD', 'YEAR'], dtObjsOne)
+
+  tryCatch({as.POSIXct(firstTryDate, format = dtFormat)}, error = function(e){
+    stop(paste('Error with timeColFormat. Attempting to convert', firstTryDate,
+               'to format', dtFormat))
+  })
+
+  if( is.na(as.POSIXct(firstTryDate, format = dtFormat))){
+    stop(paste('Error with timeColFormat. Attempting to convert', firstTryDate,
+               'to format', dtFormat))
+  }
+}
+
 formatTimeCol <- function(dayData, timeColFormat, variables, Tinfo, fileResList){
   #format time column(s) of raw data to POSIXct
 
@@ -81,8 +87,10 @@ formatTimeCol <- function(dayData, timeColFormat, variables, Tinfo, fileResList)
   dtFormat <- paste('%Y', paste(timeColFormat, collapse = ' '))
 
   # paste all time cols together
-  #browser()
   dtObjs <- apply(array(dayData[, timeColFormat]) , 1 , paste, collapse=" ")
+  #check that time columns will format
+  checkTimeColFormat(dtObjs[1], dtFormat)
+
   #paste with year and convert to posixct
   dayData <- dayData %>% dplyr::mutate(TIME = paste(Tinfo['tD', 'YEAR'], dtObjs)) %>%
     dplyr::mutate(TIME = as.POSIXct(TIME, format = dtFormat)) %>%
@@ -155,8 +163,11 @@ getUnits <- function(variables, variableColNos){
   print('Getting variable units from metadata site...')
   varInfo <- lf_getVariables()
 
-  ### add chech here ###
-
+  #check all the varibles are on the metadata system
+  if (any(!(variables %in% varInfo$id))){
+    invalidVar <- variables[!(variables %in% varInfo$id)]
+    stop(paste('Variable:', invalidVar, 'not found on metadata system.'))
+  }
 
   units <- unlist(lapply(variables, function(x){
     return(varInfo[varInfo$id == x, ]$unit)
@@ -167,8 +178,8 @@ getUnits <- function(variables, variableColNos){
   return(vars)
 }
 
-readRawFiles <- function(dateList, instrument, fileTimeRes, sep,
-                         vars, timeColFormat, fileResList, skipRows){
+readRawFiles <- function(dateList, instrument, sep, vars, timeColFormat,
+                         fileResList, skipRows){
   rawDataList <- list()
   #find the number of time columns
   nTimeCols <- length(timeColFormat)

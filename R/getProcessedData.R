@@ -1,14 +1,11 @@
 getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
                            variables){
   require(ncdf4)
-  require(stringr)
-  require(dplyr)
-  source(Sys.getenv('MM_LUMAfun'))
 
   # check file Time res is specified
-  if (is.na(fileTimeRes)){
-    stop('Please specify fileTimeRes')
-  }
+  #if (is.na(fileTimeRes)){
+  #  stop('Please specify fileTimeRes')
+  #}
 
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
@@ -44,8 +41,12 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   # get rid of error when weird data leads to crazy time values
   allDataDf <- allDataDf[as.numeric(allDataDf$TIME) < 1e100,]
 
+  #create a dataframe of meta data
+  metadata <- list(instrument = instrument, level = level,
+                   fileTimeRes = paste0(fileResList, collapse = ''),
+                   units = vars[c('variables', 'units')])
   #add units to data
-  allData <- list(data = allDataDf, units = varUnits)
+  allData <- list(data = allDataDf, metadata = metadata)
 
   return(allData)
 }

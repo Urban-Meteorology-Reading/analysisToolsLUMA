@@ -30,6 +30,16 @@
 getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTimeRes = NA,
                    sep = NA, variableColNos = NA, timeColFormat = NA, skipRows = 0){
 
+  require(stringr)
+  require(dplyr)
+  require(tidyr)
+  require(lubridate)
+  require(purrr)
+  source(Sys.getenv('MM_LUMAfun'))
+
+  # check instrument and dates are valid
+  checkInputs(instrument, startDate, endDate)
+
   if (level == 'RAW'){
     #check all valid variables are inputted if level = RAW
     if(any(is.na(c(sep, variableColNos, timeColFormat)))){

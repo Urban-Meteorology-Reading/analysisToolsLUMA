@@ -67,9 +67,13 @@
 #'               SAVEsize = SAVEsize)
 
 plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
-                   tickBreaks, dateLabelFormat, fileTimeRes = NA,  sep = NA, variableColNos = NA,
-                   timeColFormat = NA, skipRows = 0, title = NA, SAVEplot = FALSE,
+                   fileTimeRes = NA,  sep = NA, variableColNos = NA,
+                   timeColFormat = NA, skipRows = 0, tickBreaks = NA,
+                   dateLabelFormat = NA,title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
+
+  #check the save parameters at start to prevent wasting time
+  checkSaveParams(SAVEname, SAVEsize)
 
   # get the data
   allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,

@@ -4,12 +4,17 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
 
   # we are assuming the out def doesn't change throughout the period
   startTinfo <- lf_Tinfo(as.Date(startDate))
-  #get the serial numbers for the instrument
-  serials <- lf_serialsRunningToday(instrumentId = instrument$id, startTinfo)
-  #get the correct site
-  instSerial <- serials[serials[['siteId']] == instrument$site, ]$instSerial
 
-  #### check for multiple serials at site
+  if ('serial' %in% names(instrument)){
+    instSerial <- instrument$serial
+  } else {
+    #get the serial numbers for the instrument
+    serials <- lf_serialsRunningToday(instrumentId = instrument$id, startTinfo)
+    #get the correct site
+    instSerial <- serials[serials[['siteId']] == instrument$site, ]$instSerial
+    #check for any issues with serial
+    checkInstSerial(instSerial)
+  }
 
   #get the output definitions for this serial
   instOutDef <- lf_getOutputDef(instSerial, startTinfo, level)
@@ -18,6 +23,20 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   instOutDefVals <- selectOutDef(fileTimeRes, instrument, instOutDef)
 
   return(instOutDefVals)
+}
+
+checkInstSerial <- function(instSerial){
+  #error if no inst at site
+  if (purrr::is_empty(instSerial)){
+    stop(paste('No serials found for', instrument$id, 'at', instrument$site ))
+  }
+
+  # error if multiple serials at site
+  if (length(instSerial) > 1) {
+    stop(paste('Multiple serials for', instrument$id, 'at', instrument$site,
+               '. Specify serial manually. Available serials:',
+               paste0(instSerial, collapse = ',')))
+  }
 }
 
 selectOutDef <- function(fileTimeRes, instrument, instOutDef){
@@ -79,7 +98,12 @@ chooseFiles <- function(dataDir, filePre, fileTimeRes){
   dayFile <- list.files(dataDir, pattern = c(filePre))
   # if there's multiple find the one with time res in it (e.g. 10Hz)
   if(length(dayFile) > 1){
-    dayFile <- dayFile[grepl(fileTimeRes, dayFile)]
+    if (!is.na(fileTimeRes)){
+        dayFile <- dayFile[grepl(fileTimeRes, dayFile)]
+    } else {
+      stop(paste('Multiple time resolutions available. fileTimeRes must be specified
+                 Available files:', paste(dayFile, collapse = ',')))
+    }
   }
   return(dayFile)
 }

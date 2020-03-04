@@ -3,9 +3,6 @@
 #' @param allData
 #' @param tickBreaks
 #' @param dateLabelFormat
-#' @param lvl
-#' @param inst
-#' @param fileTRes
 #' @param title The title of the plot. If not specified then a default will be
 #' generated based on information given.
 #' @param SAVEplot Boolean whether to save the plot.
@@ -20,8 +17,7 @@
 #' @export
 #'
 #' @examples
-plotTimeSeries <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
-                     inst = NA, fileTRes = NA, title = NA,
+plotTimeSeries <- function(allData, tickBreaks = NA, dateLabelFormat = NA, title = NA,
                      SAVEplot = FALSE, SAVEname = NA, SAVEpath = NULL,
                      SAVEsize = NA){
 
@@ -30,15 +26,13 @@ plotTimeSeries <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
 
   print('Plotting data...')
 
-  #plotList is a list containing a time series for every variable
-  if(class(allData) == 'data.frame'){
-    #if dataframe: then no units will be on plot
-    plotList <- makePlotListDF(allData, tickBreaks, dateLabelFormat)
-  } else if (class(allData) == 'list'){
-    plotList <- makePlotListL(allData, tickBreaks, dateLabelFormat)
-  } else {
-    stop(paste('Invalid class:', class(allData), '. allData must be either class "list" or "data.frame"'))
+  checkSaveParams(SAVEname, SAVEsize)
+
+  if (class(allData) != 'list') {
+    stop(paste('Invalid class:', class(allData), '. allData must be class "list"'))
   }
+
+  plotList <- makePlotList(allData, tickBreaks, dateLabelFormat)
 
   # the number of columns in the grid_plot
   nc <- getNoCols(length(names(allData$data))-1)
@@ -51,10 +45,9 @@ plotTimeSeries <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
 
   # get the relative heights -> the title should be much smaller than the plots
   relH <- c(0.1, rep(1, nc))
+  # make a title if one isn't specified
   if (is.na(title)) {
-    if (any(is.na(c(lvl, inst, fileTRes)))){
-        title <- paste(startDate, '-', endDate)
-    } else {title <- makeTitle(lvl, inst, fileTRes, startDate, endDate)}
+    title <- chooseTitle(allData$metadata, startDate, endDate)
   }
 
   # create the users specified title
@@ -65,6 +58,8 @@ plotTimeSeries <- function(allData, tickBreaks, dateLabelFormat, lvl = NA,
   if (SAVEplot == TRUE){
     savePlot(SAVEpath, SAVEname, finalPlot, SAVEsize)
   }
+
+  print('Finished')
 
   return(finalPlot)
 }

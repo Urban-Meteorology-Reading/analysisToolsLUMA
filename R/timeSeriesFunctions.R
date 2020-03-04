@@ -1,24 +1,12 @@
-makePlotListDF <- function(allData, tickBreaks, dateLabelFormat){
-  #get the vars to plot
-  plotVars <- names(allData)[names(allData) != 'TIME']
-  #add plots of every variable to a plot list
-  plotList = list()
-  for (i in 1:length(plotVars)){
-    plotList[[i]] <- ggplot(data = allData) +
-      geom_line(aes_string('TIME', plotVars[i])) +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
-      scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat) +
-      xlab(paste('Time (', dateLabelFormat , ')'))
-  }
-  return(plotList)
-}
-
-makePlotListL <- function(allData, tickBreaks, dateLabelFormat){
+makePlotList <- function(allData, tickBreaks, dateLabelFormat){
   #separate data and units
   df <- allData[['data']]
-  units <- allData[['units']]
+  units <- allData[['metadata']][['units']]
   # get the variables that are going to be plot
   plotVars <- names(df)[names(df) != 'TIME']
+  #make x scale
+  xSca <- getXScale(tickBreaks, dateLabelFormat)
+
   #add plots of every variable to a plot list
   plotList = list()
   for (i in 1:length(plotVars)){
@@ -26,11 +14,23 @@ makePlotListL <- function(allData, tickBreaks, dateLabelFormat){
     plotList[[i]] <- ggplot(data = df) +
       geom_line(aes_string('TIME', plotVars[i])) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
-      scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat) +
       xlab(paste('Time (', dateLabelFormat , ')')) +
-      ylab(paste(plotVars[i], '(', varUnit, ')'))
+      ylab(paste(plotVars[i], '(', varUnit, ')')) + xSca
   }
   return(plotList)
+}
+
+getXScale <- function(tickBreaks, dateLabelFormat){
+  #depending on the info provided, make a scale for x axis
+  if (all(!is.na(c(tickBreaks, dateLabelFormat)))){
+    xSca <- scale_x_datetime(date_breaks = tickBreaks, date_labels = dateLabelFormat)
+  } else if (is.na(tickBreaks) && !is.na(dateLabelFormat)){
+    xSca <- scale_x_datetime(date_labels = dateLabelFormat)
+  } else if (!is.na(tickBreaks) && is.na(dateLabelFormat)){
+    xSca <- scale_x_datetime(date_breaks = tickBreaks)
+  } else { xSca <- NULL }
+
+  return(xSca)
 }
 
 getNoCols <- function(nVariables){
@@ -43,6 +43,18 @@ getNoCols <- function(nVariables){
     nc <- 3
   }
   return(nc)
+}
+
+chooseTitle <- function(meta, startDate, endDate){
+  lvl <- meta$level
+  inst <- meta$instrument
+  fileTRes <- meta$fileTimeRes
+
+  if (any(is.na(c(lvl, inst, fileTRes)))){
+    title <- paste(startDate, '-', endDate)
+  } else {title <- makeTitle(lvl, inst, fileTRes, startDate, endDate)}
+
+  return(title)
 }
 
 makeTitle <- function(level, instrument, fileTimeRes, startDate, endDate){
@@ -66,6 +78,12 @@ savePlot <- function(SAVEpath, SAVEname, finalPlot, SAVEsize){
   if (!is.null(SAVEpath) & !dir.exists(SAVEpath)){
     dir.create(SAVEpath, recursive = TRUE)
   }
+
+  # create a default name
+  if (is.na(SAVEname)){
+    SAVEname <- 'variableTimeSeries.png'
+  }
+
   #if size not specified use the default
   if (all(is.na(SAVEsize))){
     ggsave(SAVEname, finalPlot, path = SAVEpath)
@@ -76,3 +94,5 @@ savePlot <- function(SAVEpath, SAVEname, finalPlot, SAVEsize){
            height = as.numeric(SAVEsize[['h']]),
            units = SAVEsize[['unit']])}
 }
+
+
