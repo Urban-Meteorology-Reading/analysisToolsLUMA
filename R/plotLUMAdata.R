@@ -73,7 +73,9 @@ plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
 
   #check the save parameters at start to prevent wasting time
-  checkSaveParams(SAVEname, SAVEsize)
+  if (SAVEplot == TRUE){
+      checkSaveParams(SAVEname, SAVEsize)
+  }
 
   # get the data
   allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,

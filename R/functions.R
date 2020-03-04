@@ -36,10 +36,8 @@ checkSaveDevice <- function(SAVEname){
 
 checkSaveSize <- function(SAVEsize){
   # check save size has everything we need
-  if (!is.na(SAVEname)){
-    if (any(!(c('h', 'w', 'unit') %in% names(SAVEsize)))){
+  if (any(!(c('h', 'w', 'unit') %in% names(SAVEsize)))){
       stop('h, w and unit must be specified in SAVEize')
-    }
   }
 }
 
