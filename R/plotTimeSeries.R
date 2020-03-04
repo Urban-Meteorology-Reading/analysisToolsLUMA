@@ -26,7 +26,7 @@ plotTimeSeries <- function(allData, tickBreaks = NA, dateLabelFormat = NA, title
 
   print('Plotting data...')
 
-  if (SAVEplot = TRUE){
+  if (SAVEplot == TRUE){
      checkSaveParams(SAVEname, SAVEsize)
   }
 
