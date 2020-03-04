@@ -43,7 +43,7 @@ getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTi
   if (level == 'RAW'){
     #check all valid variables are inputted if level = RAW
     if(any(is.na(c(sep, variableColNos, timeColFormat)))){
-      stop('Args sep, variableColNos, timeColFormat and nTimeCols must be
+      stop('Args sep, variableColNos and timeColFormat must be
            specifed if level = RAW' )
     #get a raw dataframe
     } else { allData <- getRawData(instrument, level, startDate, endDate, fileTimeRes,
