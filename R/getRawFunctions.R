@@ -65,7 +65,7 @@ getClassCols <- function(nTimeCols){
   return(classCols)
 }
 
-checkTimeColFormat <- function(dtObjsOne, dtFormat){
+checkTimeColFormat <- function(dtObjsOne, dtFormat, Tinfo){
   #try and format first time into timecol format and give error if doesnt work
   firstTryDate <- paste(Tinfo['tD', 'YEAR'], dtObjsOne)
 
@@ -89,7 +89,7 @@ formatTimeCol <- function(dayData, timeColFormat, variables, Tinfo, fileResList)
   # paste all time cols together
   dtObjs <- apply(array(dayData[, timeColFormat]) , 1 , paste, collapse=" ")
   #check that time columns will format
-  checkTimeColFormat(dtObjs[1], dtFormat)
+  checkTimeColFormat(dtObjs[1], dtFormat, Tinfo)
 
   #paste with year and convert to posixct
   dayData <- dayData %>% dplyr::mutate(TIME = paste(Tinfo['tD', 'YEAR'], dtObjs)) %>%
