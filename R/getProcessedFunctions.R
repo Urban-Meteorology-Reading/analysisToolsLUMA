@@ -96,6 +96,7 @@ createReplacementVec <- function(DATE, instrument, level, replacementVec, instOu
 chooseFiles <- function(dataDir, filePre, fileTimeRes){
   # list all the files in the datadir where file prefix is present
   dayFile <- list.files(dataDir, pattern = c(filePre))
+
   # if there's multiple find the one with time res in it (e.g. 10Hz)
   if(length(dayFile) > 1){
     if (!is.na(fileTimeRes)){

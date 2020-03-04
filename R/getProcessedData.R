@@ -3,9 +3,9 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   require(ncdf4)
 
   # check file Time res is specified
-  #if (is.na(fileTimeRes)){
-  #  stop('Please specify fileTimeRes')
-  #}
+  if (is.na(fileTimeRes)){
+    stop('Please specify fileTimeRes')
+  }
 
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
