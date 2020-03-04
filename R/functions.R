@@ -15,7 +15,7 @@ getFileRes <- function(fileTimeRes){
         fileResList$Unit != 'Hz'){
       stop(paste('Invalid fileTimeRes unit:', fileResList$Unit, 'valid units are: "min", "sec" and "Hz"'))
     }
-  }
+  } else(filResList <- NA)
   return(fileResList)
 }
 
