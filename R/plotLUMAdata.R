@@ -82,8 +82,7 @@ plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                     sep, variableColNos, timeColFormat, skipRows)
 
   # plot the data
-  finalPlot <- plotTimeSeries(allData, tickBreaks, dateLabelFormat, level, instrument,
-                          fileTimeRes, title, SAVEplot, SAVEname, SAVEpath,
+  finalPlot <- plotTimeSeries(allData, tickBreaks, dateLabelFormat, title, SAVEplot, SAVEname, SAVEpath,
                           SAVEsize)
 
   return(finalPlot)
