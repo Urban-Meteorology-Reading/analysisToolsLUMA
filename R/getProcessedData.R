@@ -44,7 +44,7 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   #create a dataframe of meta data
   metadata <- list(instrument = instrument, level = level,
                    fileTimeRes = paste0(fileResList, collapse = ''),
-                   units = vars[c('variables', 'units')])
+                   units = varUnits)
   #add units to data
   allData <- list(data = allDataDf, metadata = metadata)
 
