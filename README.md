@@ -145,7 +145,7 @@ allData <- getLUMAdata
 finalPlot <- plotTimeSeries
 ```
 
-Use ?getLUMAdata() and ?plotTimeSeries for more details.
+Use ?getLUMAdata() and ?plotTimeSeries() for more details.
 
 Notes
 * doesn't deal with changes in site and time res

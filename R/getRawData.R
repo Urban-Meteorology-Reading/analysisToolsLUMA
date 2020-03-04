@@ -1,12 +1,8 @@
 getRawData <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
                      variableColNos, variables, timeColFormat, skipRows){
-  require(stringr)
-  require(dplyr)
-  require(tidyr)
-  require(lubridate)
 
-  source(Sys.getenv('MM_LUMAfun'))
-
+  #check inputs
+  checkRawArgs(variables, variableColNos)
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
   #create a list of dates to be run
@@ -24,15 +20,19 @@ getRawData <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
   #get the variable units from the metadata system
   vars <- getUnits(variables, variableColNos)
   #read and pad data
-  rawDataList <- readRawFiles(dateList, instrument, fileTimeRes, sep,
-                              vars, timeColFormat, fileResList, skipRows)
+  rawDataList <- readRawFiles(dateList, instrument, sep, vars, timeColFormat,
+                              fileResList, skipRows)
 
   #bind list elements
   allDataDf <- do.call(rbind, rawDataList)
   allDataDf <- allDataDf[is.na(allDataDf['TIME']) == FALSE, ]
 
+  #create a dataframe of meta data
+  metadata <- list(instrument = instrument, level = level,
+                         fileTimeRes = paste0(fileResList, collapse = ''),
+                         units = vars[c('variables', 'units')])
   #add units to data
-  allData <- list(data = allDataDf, units = vars[c('variables', 'units')])
+  allData <- list(data = allDataDf, metadata = metadata)
   return(allData)
 }
 
