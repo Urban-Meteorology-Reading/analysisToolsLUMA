@@ -6,6 +6,12 @@ makePlotList <- function(allData, tickBreaks, dateLabelFormat){
   plotVars <- names(df)[names(df) != 'TIME']
   #make x scale
   xSca <- getXScale(tickBreaks, dateLabelFormat)
+  # display dateLabelFormate on x axis if it's specified
+  if(is.na(dateLabelFormat)){
+    Xlabel <- 'Time'
+  } else {
+    Xlabel <- paste('Time (', dateLabelFormat , ')')
+  }
 
   #add plots of every variable to a plot list
   plotList = list()
@@ -14,7 +20,7 @@ makePlotList <- function(allData, tickBreaks, dateLabelFormat){
     plotList[[i]] <- ggplot(data = df) +
       geom_line(aes_string('TIME', plotVars[i])) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
-      xlab(paste('Time (', dateLabelFormat , ')')) +
+      xlab(Xlabel) +
       ylab(paste(plotVars[i], '(', varUnit, ')')) + xSca
   }
   return(plotList)
