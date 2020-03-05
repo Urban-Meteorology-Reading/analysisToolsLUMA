@@ -13,19 +13,11 @@ getFileResFromMeta <- function(startDate, instrument){
   startTinfo <- lf_Tinfo(startDate)
   # get sensor info
   sensorInfo <- lf_sensorINFO(instrument$site, instrument$id, startTinfo)
-
-  #check if multiple serials at site
+  #check sensor info and information given is consistent
+  checkSensorInfo(instrument, sensorInfo, startDate)
+  #if multiple serials at site use serial given
   if (nrow(sensorInfo) > 1){
-    if (!('serial' %in% names(instrument))){
-      stop(paste('Multiple', instrument$id, 'at', instrument$site,
-                 '. Specify serial in instrument list. Available serials:',
-                 paste(sensorInfo$instSerial, collapse = ', ')))
-      # if serial not in available serials
-    } else if (!(instrument$serial %in% sensorInfo$instSerial)){
-      stop(paste('Serial', instrument$serial, 'not found at', instrument$site,
-                 '. Available serials:',
-                 paste(sensorInfo$instSerial, collapse = ', ')))
-    } else { ftr <- sensorInfo$rawTimeResolution[sensorInfo$instSerial == instrument$serial][[1]]}
+     ftr <- sensorInfo$rawTimeResolution[sensorInfo$instSerial == instrument$serial][[1]]
     # otherwise use only file res option
   } else {ftr <- sensorInfo$rawTimeResolution[[1]]}
 
@@ -36,6 +28,31 @@ getFileResFromMeta <- function(startDate, instrument){
   fileResList <- getFileRes(ftr)
 
   return(fileResList)
+}
+
+checkSensorInfo <- function(instrument, sensorInfo, theDate){
+  #check sensor info and information given is consistent
+  #if multiple sensors at site
+  if (nrow(sensorInfo) > 1){
+    # if the serial isn't specified
+    if (!('serial' %in% names(instrument))){
+      stop(paste('Multiple', instrument$id, 'at', instrument$site,
+                 '. Specify serial in instrument list. Available serials:',
+                 paste(sensorInfo$instSerial, collapse = ', ')))
+      # if serial not in available serials
+    } else if (!(instrument$serial %in% sensorInfo$instSerial)){
+      stop(paste('Serial', instrument$serial, 'not found at', instrument$site,
+                 'on date', as.character(theDate),
+                 '. Available serials:',
+                 paste(sensorInfo$instSerial, collapse = ', ')))
+    }
+  # if one sensor at site but the serial specified doesn't match that on sensor info
+  } else if ('serial' %in% names(instrument) && instrument$serial != sensorInfo$instSerial){
+      stop(paste('Sensor info has found', instrument$id,
+                 'at site', instrument$site, 'on date',
+                 as.character(startDate), 'to have serial number',
+                 sensorInfo$instSerial, 'not the specifed', instrument$serial))
+  }
 }
 
 readRawData <- function(x, separator, classCols, skipRows){
@@ -190,6 +207,8 @@ readRawFiles <- function(dateList, instrument, sep, vars, timeColFormat,
     Tinfo <- lf_Tinfo(as.Date(DATE))
     sensorInfo <- lf_sensorINFO(instrument$site, instrument$id, Tinfo)
 
+    #check sensor info and information given is consistent
+    checkSensorInfo(instrument, sensorInfo, DATE)
     #select raw files for this serial
     rawFiles <- selectRawFiles(sensorInfo, instrument)
 

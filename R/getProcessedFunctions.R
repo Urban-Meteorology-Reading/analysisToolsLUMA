@@ -19,6 +19,14 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   #get the output definitions for this serial
   instOutDef <- lf_getOutputDef(instSerial, startTinfo, level)
 
+  #stop if instrument site doesn't match output def
+  if (instrument$site != instOutDef[[1]]$header['Site', 2][[1]]){
+    stop(paste('Output definition has found serial', instSerial,
+               'to be at site', instOutDef[[1]]$header['Site', 2][[1]],
+               'on date', as.character(startDate),
+               'not the specified site,', instrument$site))
+  }
+
   # decide which output def to use based on the file time res and if is ECpack
   instOutDefVals <- selectOutDef(fileTimeRes, instrument, instOutDef)
 

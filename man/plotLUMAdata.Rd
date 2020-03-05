@@ -10,13 +10,13 @@ plotLUMAdata(
   startDate,
   endDate,
   variables,
-  tickBreaks,
-  dateLabelFormat,
   fileTimeRes = NA,
   sep = NA,
   variableColNos = NA,
   timeColFormat = NA,
   skipRows = 0,
+  tickBreaks = NA,
+  dateLabelFormat = NA,
   title = NA,
   SAVEplot = FALSE,
   SAVEname = NA,
@@ -36,14 +36,6 @@ consistent with the LUMA metadata system.}
 \item{variables}{A string or vector of strings of the variables to plot.
 These must be consisted with variables on LUMA metadata website.}
 
-\item{tickBreaks}{How often ticks should appear on plots. e.g. 6 hours.
-See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime
-date_breaks for valid options.}
-
-\item{dateLabelFormat}{The format of date labels e.g. %H:%M to have time labels
-with Hour and Minute separated by : . See date_labels in link above for valid
-options.}
-
 \item{fileTimeRes}{Time resolution of file this should be consistent with file
 names on the cluster e.g. 1min. Only needed when level is not RAW.}
 
@@ -56,6 +48,14 @@ to be plotted.}
 if multiple time columns.}
 
 \item{skipRows}{How many rows to skip when reading raw file. Default is none.}
+
+\item{tickBreaks}{How often ticks should appear on plots. e.g. 6 hours.
+See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime
+date_breaks for valid options.}
+
+\item{dateLabelFormat}{The format of date labels e.g. %H:%M to have time labels
+with Hour and Minute separated by : . See date_labels in link above for valid
+options.}
 
 \item{title}{The title of the plot. If not specified then a default will be
 generated based on information given.}
