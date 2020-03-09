@@ -2,7 +2,8 @@
 #'
 #' @param instrument A list containing the instrument name an site in the form
 #' list(id = "INSTID", site = "SITENAME"). INSTID and SITENAME should be
-#' consistent with the LUMA metadata system.
+#' consistent with the LUMA metadata system. 'ECpack' can also be included with
+#' a boolean.
 #' @param level The quality level of the data. Either "RAW" or an integer.
 #' @param startDate,endDate Start and end date of plot. Should be of class date.
 #' @param variables A string or vector of strings of the variables to plot.

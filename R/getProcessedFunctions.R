@@ -1,7 +1,6 @@
 getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   #get the output definitions for the instrument specified
   print('Getting output definitions from metadata site...')
-
   # we are assuming the out def doesn't change throughout the period
   startTinfo <- lf_Tinfo(as.Date(startDate))
 
@@ -10,6 +9,9 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   } else {
     #get the serial numbers for the instrument
     serials <- lf_serialsRunningToday(instrumentId = instrument$id, startTinfo)
+    if (purrr::is_empty(serials)){
+      stop(paste(instrument$id, 'not found running for date', as.character(startDate)))
+    }
     #get the correct site
     instSerial <- serials[serials[['siteId']] == instrument$site, ]$instSerial
     #check for any issues with serial
