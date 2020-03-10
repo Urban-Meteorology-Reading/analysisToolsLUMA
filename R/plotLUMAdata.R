@@ -46,14 +46,14 @@
 #' endDate = as.Date('2020-031', format = '%Y-%j')
 #' fileTimeRes = '1min'
 #' variables = c('Tair', 'dir', 'RH')
-#' tickBreaks <- '6 hours'
-#' dateLabelFormat <- '%j %H:%M'
 #' sep <- ','
 #' variableColNos <- c(2, 9, 10)
 #' timeColFormat <- '%Y-%m-%d %H:%M:%S'
+#' tickBreaks <- '6 hours'
+#' dateLabelFormat <- '%j %H:%M'
 #' #create the plot
-#' RAWplot <- plotData(instrument, level, startDate, endDate, fileTimeRes, variables,
-#'              tickBreaks, dateLabelFormat, sep, variableColNos, timeColFormat)
+#' RAWplot <- plotLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
+#'                         sep, variableColNos, timeColFormat, tickBreaks, dateLabelFormat)
 #'
 #' #plot processed netcdf data and save it automatically, manually specifying the title
 #' level = 1
@@ -62,10 +62,9 @@
 #' SAVEpath = 'imgs'
 #' SAVEsize = c(h = 7.23, w = 7.56, unit = 'in'
 #' #this will save plot in imgs folder with a height and width of 7.23 and 7.56 inches, repsectively
-#' L1plot <- plotData(instrument, level, startDate, endDate, fileTimeRes, variables,
-#'               tickBreaks, dateLabelFormat, title = title, SAVEplot = TRUE,
-#'               SAVEname = SAVEname, SAVEpath = SAVEpath,
-#'               SAVEsize = SAVEsize)
+#' L1plot <- plotLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
+#'                        title = title, SAVEplot = TRUE, SAVEname = SAVEname, SAVEpath = SAVEpath,
+#'                        SAVEsize = SAVEsize)
 
 plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    fileTimeRes = NA,  sep = NA, variableColNos = NA,

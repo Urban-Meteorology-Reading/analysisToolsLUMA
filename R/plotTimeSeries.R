@@ -1,8 +1,12 @@
 #' Create a time series from a dataframe or output equivalent to that from getLUMAdata.
 #'
-#' @param allData
-#' @param tickBreaks
-#' @param dateLabelFormat
+#' @param allData The data to plot in the form output by getLUMAdata().
+#' @param tickBreaks How often ticks should appear on plots. e.g. 6 hours.
+#' See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime
+#' date_breaks for valid options.
+#' @param dateLabelFormat The format of date labels e.g. %H:%M to have time labels
+#' with Hour and Minute separated by : . See date_labels in link above for valid
+#' options.
 #' @param title The title of the plot. If not specified then a default will be
 #' generated based on information given.
 #' @param SAVEplot Boolean whether to save the plot.
@@ -13,10 +17,11 @@
 #' h (height), w (width) and unit. See https://ggplot2.tidyverse.org/reference/ggsave.html
 #' for valid units.
 #'
-#' @return
+#' @return A time series for each variable.
 #' @export
 #'
 #' @examples
+
 plotTimeSeries <- function(allData, tickBreaks = NA, dateLabelFormat = NA, title = NA,
                      SAVEplot = FALSE, SAVEname = NA, SAVEpath = NULL,
                      SAVEsize = NA){

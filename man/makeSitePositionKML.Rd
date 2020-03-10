@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeSitePositionKML.R
 \name{makeSitePositionKML}
 \alias{makeSitePositionKML}
-\title{Title}
+\title{Create a kml file displaying the locations of an instrument at a given date.}
 \usage{
 makeSitePositionKML(
   instrumentID,
@@ -12,11 +12,20 @@ makeSitePositionKML(
 )
 }
 \arguments{
-\item{outDir}{}
+\item{instrumentID}{instrument id that must be consistent with LUMA metadata site.}
+
+\item{layerName}{the name of the output file.}
+
+\item{DATE}{the date to use. Must be class 'Date'.}
+
+\item{outDir}{the directory to save the kml file.}
 }
 \value{
-
+A kml file that can be viewed in google earth.
 }
 \description{
-Title
+Create a kml file displaying the locations of an instrument at a given date.
+}
+\examples{
+makeSitePositionKML('CL31', 'ceilometerPositions', as.Date('2020-10-03'), 'ceilkml')
 }
