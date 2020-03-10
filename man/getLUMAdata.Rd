@@ -2,7 +2,7 @@
 % Please edit documentation in R/getLUMAdata.R
 \name{getLUMAdata}
 \alias{getLUMAdata}
-\title{Extract raw or processed LUMA data from cluster.}
+\title{Extract raw or processed LUMA data from the RACC.}
 \usage{
 getLUMAdata(
   instrument,
@@ -25,12 +25,12 @@ number by list(serial = "serialNo").}
 
 \item{level}{The quality level of the data. Either "RAW" or an integer.}
 
-\item{startDate, endDate}{Start and end date of plot. Should be of class date.}
+\item{startDate, endDate}{Start and end date to extract. Should be of class date.}
 
 \item{variables}{A string or vector of strings of the variables to plot.
 These must be consisted with variables on LUMA metadata website.}
 
-\item{fileTimeRes}{Time resolution of file this should be consistent with file
+\item{fileTimeRes}{Time resolution of file. This should be consistent with file
 names on the cluster e.g. 1min. Only needed when level is not RAW.}
 
 \item{sep}{If data is RAW then what is data separated by e.g. ','.}
@@ -55,5 +55,25 @@ options.}
 A list of containing the requested data and the variable units.
 }
 \description{
-Extract raw or processed LUMA data from cluster.
+Extract raw or processed LUMA data from the RACC.
+}
+\examples{
+#get a RAW data
+# set up arguments
+instrument <- list(id = 'SWTWXSTATION',  site = 'SWT')
+level <- 'RAW'
+startDate = as.Date('2020-030', format = '\%Y-\%j')
+endDate = as.Date('2020-031', format = '\%Y-\%j')
+variables = c('Tair', 'dir', 'RH')
+sep <- ','
+variableColNos <- c(2, 9, 10)
+timeColFormat <- '\%Y-\%m-\%d \%H:\%M:\%S'
+#create the plot
+RAWdata <- getLUMAdata(instrument, level, startDate, endDate, variables,
+                   sep = sep, variableColNos = variableColNos, dateLabelFormat = dateLabelFormat)
+
+#processed data requires a fileTimeRes
+level <- 1
+fileTimeRes <- '15min'
+L1data <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes)
 }

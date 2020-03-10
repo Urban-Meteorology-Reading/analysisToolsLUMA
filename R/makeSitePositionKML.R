@@ -1,14 +1,16 @@
-#' Title
+#' Create a kml file displaying the locations of an instrument at a given date.
 #'
-#' @param instrumentID
-#' @param layerName
-#' @param DATE
-#' @param outDir
+#' @param instrumentID instrument id that must be consistent with LUMA metadata site.
+#' @param layerName the name of the output file.
+#' @param DATE the date to use. Must be class 'Date'.
+#' @param outDir the directory to save the kml file.
 #'
-#' @return
+#' @return A kml file that can be viewed in google earth.
 #' @export
 #'
 #' @examples
+#' makeSitePositionKML('CL31', 'ceilometerPositions', as.Date('2020-10-03'), 'ceilkml')
+
 makeSitePositionKML <- function(instrumentID, layerName, DATE = Sys.Date(), outDir = getwd()){
   require(rgdal)
   source(Sys.getenv('MM_LUMAfun'))
