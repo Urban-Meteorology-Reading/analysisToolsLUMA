@@ -1,10 +1,6 @@
 # analysisToolsLUMA
 
-Functions that can be used to analyse and check LUMA observation data.
-
-These can be run on the RACC.  
-
-If you have any functions that might be useful please feel free to add them to this repository. See [here](https://github.com/kitbenjamin/analysisToolsLUMA/wiki/Contribution) for advice on this.
+A set of functions that can come in handy for those using or checking LUMA data. 
 
 ## Installation
 
@@ -18,6 +14,12 @@ library(analysisToolsLUMA)
 
 ## Information
 
-See the [wiki](https://github.com/kitbenjamin/analysisToolsLUMA/wiki) for information on the functions available.
+The functions can be used to access, analyse, check and plot LUMA observation data.
 
-The functions available are listed [here](https://github.com/kitbenjamin/analysisToolsLUMA/wiki/Functions)
+See the [wiki](https://github.com/kitbenjamin/analysisToolsLUMA/wiki) for information on the package.
+
+* The functions available are listed [here](https://github.com/kitbenjamin/analysisToolsLUMA/wiki/Functions)
+
+## Contribution
+
+If you have any functions that might be useful please feel free to add them to this repository. See [here](https://github.com/kitbenjamin/analysisToolsLUMA/wiki/Contribution) for advice on this.
