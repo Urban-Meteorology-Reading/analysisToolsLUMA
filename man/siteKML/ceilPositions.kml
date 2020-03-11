@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="ceilPositions" id="ceilPositions">
+	<SimpleField name="siteName" type="string"></SimpleField>
+</Schema>
+<Folder><name>ceilPositions</name>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">IMU</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.106086,51.526148</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">RGS</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.17492,51.501517</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">SWT</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.091059,51.487765</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">MR</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.154566,51.52253</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">HOP</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.037491,51.449684</coordinates></Point>
+  </Placemark>
+  <Placemark>
+	<ExtendedData><SchemaData schemaUrl="#ceilPositions">
+		<SimpleData name="siteName">URAO</SimpleData>
+	</SchemaData></ExtendedData>
+      <Point><coordinates>-0.93795,51.4414</coordinates></Point>
+  </Placemark>
+</Folder>
+</Document></kml>
