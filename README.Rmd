@@ -43,12 +43,15 @@ timeColFormat = '%Y-%m-%d %H:%M:%S' # format of the time column
 ```
 Now plot the data
 
-```{r plotwxt, eval=FALSE}
+```{r plotwxt}
 
-rawWXTPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat) 
+rawWXTData <- analysisToolsLUMA::getLUMAdata(instrument, level, startDate, endDate, variables, sep = sep, variableColNos = variableColNos, timeColFormat = timeColFormat) 
 
 ```
 
+```{r}
+lapply(rawWXTData, head)
+```
 
 ### Example 2: plotting raw data
 
@@ -93,19 +96,22 @@ rawMicroPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, en
 Plotting processed data is even easier.
 Here we plot IMU eddy covariance data:
 
-```{r plotEC, eval=FALSE}
+```{r plotEC}
 
 instrument <- list(id = 'LI7500A', site = 'IMU', ECpack = TRUE) #omit EC pack to plot non-ECpack data 
 level <- 1 # as an integer
-startDate <- as.Date('2020-01-01') 
-endDate <- as.Date('2020-02-27')
-variables <- c('C_CO2', 'Q_E') 
+startDate <- as.Date('2020-03-06') #start and end date must be class 'Date'
+endDate <- as.Date('2020-03-09')
+variables <- c('C_CO2_kg', 'Q_E') 
 tickBreaks <- '7 days' # where ticks will be on the plot
 dateLabelFormat <- '%d-%m %H' #how the time axis will be formatted
 fileTimeRes = '30min' # for processed data the file time resolution must be manually defined as there's often several options.
-lOneLicorPlot <- analysisToolsLUMA::plotLUMAdata(instrument, level, startDate, endDate, variables, tickBreaks, dateLabelFormat, fileTimeRes) 
+lOneLicoData <- analysisToolsLUMA::getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes) 
 ```
 
+```{r view}
+lapply(lOneLicoData, head)
+```
 plotLUMAdata() constists of 2 main functions that
 1. get the data
 2. plots the data
@@ -123,3 +129,11 @@ Notes
 * doesn't deal with changes in site and time res
 * instrument can just be a serial number, or can be site, id and serial. I is faster to define site and ID.
 * for level RAW fileTimeRes can either be defined manually or it will be obtained from the metadata system
+
+```{r}
+ regData <- getLUMARegressionData(instrument1, instrument2, startDate, endDate,variable, fileTimeRes)
+```
+
+```{r}
+ lapply(regData, head)
+```
