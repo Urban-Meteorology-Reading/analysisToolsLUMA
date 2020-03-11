@@ -10,7 +10,7 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
 
-  print(instrument)
+  #print(instrument)
 
   print(paste('Creating dataframe of', paste(variables, collapse = ', '),
               'for', instrument$id, 'at site', instrument$site, 'for level',
