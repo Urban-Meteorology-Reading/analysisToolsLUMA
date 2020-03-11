@@ -38,7 +38,7 @@ getLUMARegressionData <- function(instrument1, instrument2, startDate, endDate,
   #varData is a list containing a dataframe with the data for both instruments
   # and the units of the variable
   varData_units <- getVarData(instrument1, instrument2, startDate, endDate,
-                        variable, fileTimeRes = NA)
+                        variable, fileTimeRes)
 
   #do some analysis
   varData_units2 <- prepVarData(varData_units)
