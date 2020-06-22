@@ -54,7 +54,7 @@ getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTi
   require(tidyr)
   require(lubridate)
   require(purrr)
-  source(Sys.getenv('MM_LUMAfun'))
+  require(LUMA)
 
   # check instrument and dates are valid
   checkInputs(instrument, startDate, endDate)

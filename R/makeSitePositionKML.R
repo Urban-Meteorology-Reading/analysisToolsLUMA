@@ -13,7 +13,7 @@
 
 makeSitePositionKML <- function(instrumentID, layerName, DATE = Sys.Date(), outDir = getwd()){
   require(rgdal)
-  source(Sys.getenv('MM_LUMAfun'))
+  require(LUMA)
 
   #get the Tinfo
   Tinfo <- lf_Tinfo(DATE)
