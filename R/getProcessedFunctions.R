@@ -132,6 +132,9 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
     var <- ncvar_get(instIn, variables[i])
     varDayData[[variables[i]]] <- var
   }
+  
+  nc_close(instIn)
+  
   return(varDayData)
 }
 
@@ -158,6 +161,7 @@ missingDay <- function(DATE, variables, fileResList){
 
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
                         filePre, fileTimeRes, fileResList, variables){
+  print('Reading data')
   varDayList <- vector(mode = 'list', length = length(dateList))
   #for every date
   for (idate in 1:length(dateList)){
@@ -172,11 +176,11 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
     dayFile <- chooseFiles(dataDir, filePre, fileTimeRes)
 
     if (length(dayFile) > 0 ){
-      print(paste('Reading file: ', file.path(dataDir, dayFile)))
+      #print(paste('Reading file: ', file.path(dataDir, dayFile)))
       #open the file and get the variables into a dataframe
       varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
     } else {
-      print(paste('File for', DATE, 'doesnt exist'))
+      #print(paste('File for', DATE, 'doesnt exist'))
       #fill dataframes for missing files with NA
       varDayData <- missingDay(DATE, variables, fileResList)
     }
