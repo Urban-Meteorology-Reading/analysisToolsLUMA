@@ -156,33 +156,31 @@ missingDay <- function(DATE, variables, fileResList){
   return(varDayData)
 }
 
-getNCDFDataDay <- function(DATE, instrument, level, dataDirForm, instOutDef,
-                           filePre, fileTimeRes, fileResList, variables){
-  
-  #replace the basedir placeholders with actual information
-  replacementVec <- c()
-  replacementVec <- createReplacementVec(DATE, instrument, level,
-                                         replacementVec, instOutDef)
-  dataDir <- stringr::str_replace_all(dataDirForm, replacementVec)
-  #get the files we want to read
-  dayFile <- chooseFiles(dataDir, filePre, fileTimeRes)
-  
-  if (length(dayFile) > 0 ){
-    print(paste('Reading file: ', file.path(dataDir, dayFile)))
-    #open the file and get the variables into a dataframe
-    varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
-  } else {
-    print(paste('File for', DATE, 'doesnt exist'))
-    #fill dataframes for missing files with NA
-    varDayData <- missingDay(DATE, variables, fileResList)
-  }
-}
-
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
                         filePre, fileTimeRes, fileResList, variables){
-  #get data for every day in date list
-  varDayList <- lapply(dateList, getNCDFDataDay, instrument, level, dataDirForm, instOutDef,
-                       filePre, fileTimeRes, fileResList, variables)
-  
+  varDayList <- list()
+  #for every date
+  for (idate in 1:length(dateList)){
+    DATE <- dateList[idate]
+
+    #replace the basedir placeholders with actual information
+    replacementVec <- c()
+    replacementVec <- createReplacementVec(DATE, instrument, level,
+                                           replacementVec, instOutDef)
+    dataDir <- stringr::str_replace_all(dataDirForm, replacementVec)
+    #get the files we want to read
+    dayFile <- chooseFiles(dataDir, filePre, fileTimeRes)
+
+    if (length(dayFile) > 0 ){
+      print(paste('Reading file: ', file.path(dataDir, dayFile)))
+      #open the file and get the variables into a dataframe
+      varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
+    } else {
+      print(paste('File for', DATE, 'doesnt exist'))
+      #fill dataframes for missing files with NA
+      varDayData <- missingDay(DATE, variables, fileResList)
+    }
+    varDayList[[idate]] <- varDayData
+  }
   return(varDayList)
 }
