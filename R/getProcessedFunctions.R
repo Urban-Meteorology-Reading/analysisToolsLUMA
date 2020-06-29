@@ -158,7 +158,7 @@ missingDay <- function(DATE, variables, fileResList){
 
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
                         filePre, fileTimeRes, fileResList, variables){
-  varDayList <- list()
+  varDayList <- vector(mode = 'list', length = length(dateList))
   #for every date
   for (idate in 1:length(dateList)){
     DATE <- dateList[idate]
