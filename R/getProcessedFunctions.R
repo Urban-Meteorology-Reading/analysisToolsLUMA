@@ -20,7 +20,7 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
 
   #get the output definitions for this serial
   instOutDef <- lf_getOutputDef(instSerial, startTinfo, level)
-
+  
   #stop if instrument site doesn't match output def
   if (instrument$site != instOutDef[[1]]$header['Site', 2][[1]]){
     stop(paste('Output definition has found serial', instSerial,
@@ -28,7 +28,12 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
                'on date', as.character(startDate),
                'not the specified site,', instrument$site))
   }
-
+  
+  # if ceilometer then different variables stored in different output defs
+  if (instrument$id == 'CL31' | instrument$id == 'CT25K'){
+    instOutDef <- checkCorrectCeilOutDef(instOutDef)
+  }
+  
   # decide which output def to use based on the file time res and if is ECpack
   instOutDefVals <- selectOutDef(fileTimeRes, instrument, instOutDef)
 
@@ -47,6 +52,25 @@ checkInstSerial <- function(instSerial){
                '. Specify serial manually. Available serials:',
                paste0(instSerial, collapse = ',')))
   }
+}
+
+checkCorrectCeilOutDef <- function(instOutDef){
+  # ceilometers have multiple output definitions 
+  correctOutDef <- vector(mode = 'list')
+  n = 1
+  if (length(instOutDef) > 1){
+    for (i in 1:length(instOutDef)){
+      if (any(variables %in% instOutDef[[i]][['variables']][,'ID'])){
+        correctOutDef[[n]] <- instOutDef[[i]]
+        n = n + 1
+      } 
+    }
+  }
+  #check all variables correct
+  if (length(correctOutDef) == 0) stop('none of the variables found for any output definition')
+  if (length(correctOutDef) > 1) stop('variables found in multiple output definitions')
+  
+  return(correctOutDef)
 }
 
 selectOutDef <- function(fileTimeRes, instrument, instOutDef){
