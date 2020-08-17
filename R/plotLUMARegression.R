@@ -11,6 +11,7 @@
 #' @param variable the variable to compare between instruments. Must be consistent with
 #' LUMA metadata site.
 #' @param fileTimeRes The file time resolution- this must be the same for each instrument.
+#' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
 #' @param tickBreaks How often ticks should appear on time series plots. e.g. 6 hours.
 #' See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime
 #' date_breaks for valid options.
@@ -37,12 +38,12 @@
 #'                                  variable, fileTimeRes, tickBreaks, dateLabelFormat)
 
 plotLUMARegression <- function(instrument1, instrument2, startDate, endDate,
-                               variable, fileTimeRes, tickBreaks = NA,
+                               variable, fileTimeRes, DRIVE = NULL, tickBreaks = NA,
                                dateLabelFormat = NA){
 
   #get the required data and analysis
   varData <- getLUMARegressionData(instrument1, instrument2, startDate, endDate,
-                               variable, fileTimeRes)
+                               variable, fileTimeRes, DRIVE)
   #plot the data
   regressionPlot <- createRegressionPlot(varData, tickBreaks, dateLabelFormat)
 

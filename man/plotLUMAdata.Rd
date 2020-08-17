@@ -15,6 +15,7 @@ plotLUMAdata(
   variableColNos = NA,
   timeColFormat = NA,
   skipRows = 0,
+  DRIVE = NULL,
   tickBreaks = NA,
   dateLabelFormat = NA,
   title = NA,
@@ -49,6 +50,8 @@ to be plotted.}
 if multiple time columns.}
 
 \item{skipRows}{How many rows to skip when reading raw file. Default is none.}
+
+\item{DRIVE}{If running on windows which drive is /storage/basic/micromet mapped to e.g. Z}
 
 \item{tickBreaks}{How often ticks should appear on plots. e.g. 6 hours.
 See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime

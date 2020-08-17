@@ -22,6 +22,7 @@
 #' @param timeColFormat The format of time columns. A string or vector of strings
 #' if multiple time columns.
 #' @param skipRows How many rows to skip when reading raw file. Default is none.
+#' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
 #' @param title The title of the plot. If not specified then a default will be
 #' generated based on information given.
 #' @param SAVEplot Boolean whether to save the plot.
@@ -68,7 +69,7 @@
 
 plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    fileTimeRes = NA,  sep = NA, variableColNos = NA,
-                   timeColFormat = NA, skipRows = 0, tickBreaks = NA,
+                   timeColFormat = NA, skipRows = 0, DRIVE = NULL, tickBreaks = NA,
                    dateLabelFormat = NA,title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
 
@@ -79,7 +80,7 @@ plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
 
   # get the data
   allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
-                    sep, variableColNos, timeColFormat, skipRows)
+                    sep, variableColNos, timeColFormat, skipRows, DRIVE)
 
   # plot the data
   finalPlot <- plotTimeSeries(allData, tickBreaks, dateLabelFormat, title, SAVEplot, SAVEname, SAVEpath,

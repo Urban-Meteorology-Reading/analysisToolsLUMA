@@ -1,5 +1,5 @@
 getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
-                           variables){
+                           variables, DRIVE){
   require(ncdf4)
 
   # check file Time res is specified
@@ -29,8 +29,13 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   #get the file prefix
   filePre <- instOutDef$filePrefix
   # define the base dir
-  dataDirForm <- file.path(Sys.getenv('MM_DAILYDATA'), 'data', '%Y', '%CITY',
-                           '%LEVEL', '%SITE', 'DAY', '%j')
+  if (is.null(DRIVE)){
+    dataDirForm <- file.path(Sys.getenv('MM_DAILYDATA'), 'data', '%Y', '%CITY',
+                             '%LEVEL', '%SITE', 'DAY', '%j')
+  } else {
+    dataDirForm <- file.path(DRIVE,'Tier_raw', 'data', '%Y', '%CITY',
+                             '%LEVEL', '%SITE', 'DAY', '%j')
+  }
   # read in the data and put into a list
   varDataList <- getNCDFData(dateList, instrument, level, dataDirForm,
                           instOutDef, filePre, fileTimeRes, fileResList,

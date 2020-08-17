@@ -1,5 +1,5 @@
 getVarData <- function(instrument1, instrument2, startDate, endDate,
-                       variable, fileTimeRes = NA){
+                       variable, fileTimeRes = NA, DRIVE){
 
   #extract the level of the instrument and remove from instrument list
   instrument1Lvl <- instrument1$level
@@ -39,11 +39,11 @@ getVarData <- function(instrument1, instrument2, startDate, endDate,
   #get the data for both instruments
   instrument1dat <- getLUMAdata(instrument1, instrument1Lvl, startDate, endDate,
                                 variable, fileTimeRes, instrument1Sep, instrument1VCN,
-                                instrument1TCF, instrument1SR)
+                                instrument1TCF, instrument1SR, DRIVE)
 
   instrument2dat <- getLUMAdata(instrument2, instrument2Lvl, startDate, endDate,
                                 variable, fileTimeRes, instrument2Sep, instrument2VCN,
-                                instrument2TCF, instrument2SR)
+                                instrument2TCF, instrument2SR, DRIVE)
 
   #create names for columns.
   names(instrument1dat$data) <- setColNames(instrument1dat)

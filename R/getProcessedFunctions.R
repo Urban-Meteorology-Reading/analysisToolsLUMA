@@ -200,7 +200,7 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
     dayFile <- chooseFiles(dataDir, filePre, fileTimeRes)
 
     if (length(dayFile) > 0 ){
-      #print(paste('Reading file: ', file.path(dataDir, dayFile)))
+      print(paste('Reading file: ', file.path(dataDir, dayFile)))
       #open the file and get the variables into a dataframe
       varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
     } else {

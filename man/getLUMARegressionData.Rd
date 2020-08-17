@@ -11,7 +11,8 @@ getLUMARegressionData(
   startDate,
   endDate,
   variable,
-  fileTimeRes = NA
+  fileTimeRes = NA,
+  DRIVE = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ or POSIXct.}
 LUMA metadata site.}
 
 \item{fileTimeRes}{The file time resolution- this must be the same for each instrument.}
+
+\item{DRIVE}{If running on windows which drive is /storage/basic/micromet mapped to e.g. Z}
 }
 \value{
 A list with three elements: $data containing a dataframe of variable from

@@ -22,6 +22,7 @@
 #' @param timeColFormat The format of time columns. A string or vector of strings
 #' if multiple time columns.
 #' @param skipRows How many rows to skip when reading raw file. Default is none.
+#' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
 #'
 #' @return A list of containing the requested data and the variable units.
 #' @export
@@ -47,7 +48,7 @@
 #' L1data <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes)
 
 getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTimeRes = NA,
-                   sep = NA, variableColNos = NA, timeColFormat = NA, skipRows = 0){
+                   sep = NA, variableColNos = NA, timeColFormat = NA, skipRows = 0, DRIVE = NULL){
 
   require(stringr)
   require(dplyr)
@@ -57,7 +58,7 @@ getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTi
   require(LUMA)
 
   # check instrument and dates are valid
-  checkInputs(instrument, startDate, endDate)
+  DRIVE <- checkInputs(instrument, startDate, endDate, DRIVE)
 
   if (level == 'RAW'){
     #check all valid variables are inputted if level = RAW
@@ -67,10 +68,10 @@ getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTi
     #get a raw dataframe
     } else { allData <- getRawData(instrument, level, startDate, endDate, fileTimeRes,
                                  sep, variableColNos, variables,
-                                 timeColFormat, skipRows)}
+                                 timeColFormat, skipRows, DRIVE)}
   # otherwise read processed data
   } else {allData <- getProcessedData(instrument, level, startDate, endDate,
-                                    fileTimeRes, variables)}
+                                    fileTimeRes, variables, DRIVE)}
 
   return(allData)
 }

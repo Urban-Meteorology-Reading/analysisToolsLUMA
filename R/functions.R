@@ -42,10 +42,12 @@ checkSaveSize <- function(SAVEsize){
   }
 }
 
-checkInputs <- function(instrument, startDate, endDate){
+checkInputs <- function(instrument, startDate, endDate, DRIVE){
   checkInstrument(instrument)
   checkDate(startDate)
   checkDate(endDate)
+  DRIVE <- checkDRIVE(DRIVE)
+  return(DRIVE)
 }
 
 checkInstrument <- function(instrument){
@@ -81,4 +83,14 @@ checkSerialInfo <- function(instrument, startDate){
   }
 
   return(instrument)
+}
+
+checkDRIVE <- function(DRIVE){
+  # add : to drive if not already there
+  if (!is.null(DRIVE)){
+    if (!grepl(':', DRIVE)){
+      DRIVE <- paste0(DRIVE, ':')
+    }
+  }
+  return(DRIVE)
 }

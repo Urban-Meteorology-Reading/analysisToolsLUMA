@@ -1,5 +1,5 @@
 getRawData <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
-                     variableColNos, variables, timeColFormat, skipRows){
+                     variableColNos, variables, timeColFormat, skipRows, DRIVE){
 
   #check inputs
   checkRawArgs(variables, variableColNos)
@@ -21,7 +21,7 @@ getRawData <- function(instrument, level, startDate, endDate, fileTimeRes, sep,
   vars <- getUnits(variables, variableColNos)
   #read and pad data
   rawDataList <- readRawFiles(dateList, instrument, sep, vars, timeColFormat,
-                              fileResList, skipRows)
+                              fileResList, skipRows, DRIVE)
 
   #bind list elements
   allDataDf <- do.call(rbind, rawDataList)

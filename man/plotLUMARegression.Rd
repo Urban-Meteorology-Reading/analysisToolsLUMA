@@ -12,6 +12,7 @@ plotLUMARegression(
   endDate,
   variable,
   fileTimeRes,
+  DRIVE = NULL,
   tickBreaks = NA,
   dateLabelFormat = NA
 )
@@ -30,6 +31,8 @@ or POSIXct.}
 LUMA metadata site.}
 
 \item{fileTimeRes}{The file time resolution- this must be the same for each instrument.}
+
+\item{DRIVE}{If running on windows which drive is /storage/basic/micromet mapped to e.g. Z}
 
 \item{tickBreaks}{How often ticks should appear on time series plots. e.g. 6 hours.
 See https://www.rdocumentation.org/packages/ggplot2/versions/1.0.0/topics/scale_x_datetime

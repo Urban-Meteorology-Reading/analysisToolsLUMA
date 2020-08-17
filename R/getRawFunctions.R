@@ -164,14 +164,23 @@ padWholeDate <- function(Tinfo, fileResList, vars){
   return(wholeDay)
 }
 
-selectRawFiles <- function(sensorInfo, instrument){
+selectRawFiles <- function(sensorInfo, instrument, DRIVE){
   #if there's multiple instruments at a site
   if (nrow(sensorInfo) > 1){
       # if more than 1 serial at site
       rawFiles <- sensorInfo$rawFiles[sensorInfo$instSerial == instrument$serial][[1]]
     # otherwise use only raw files option
   } else {rawFiles <- sensorInfo$rawFiles[[1]]}
-
+  
+  #Check if working on windows
+  if (!is.null(DRIVE)){
+    rawFilesSplit <- strsplit(rawFiles, '/|//')[[1]]
+    # find tier_raw index 
+    tierRawInd <- which(rawFilesSplit == 'Tier_raw')
+    # alter path to include DRIVE 
+    tierRawDir <- paste0(rawFilesSplit[tierRawInd:length(rawFilesSplit)], collapse = .Platform$file.sep)
+    rawFiles <- file.path(DRIVE, tierRawDir)
+  }
   return( rawFiles )
 }
 
@@ -196,7 +205,7 @@ getUnits <- function(variables, variableColNos){
 }
 
 readRawFiles <- function(dateList, instrument, sep, vars, timeColFormat,
-                         fileResList, skipRows){
+                         fileResList, skipRows, DRIVE){
   rawDataList <- list()
   #find the number of time columns
   nTimeCols <- length(timeColFormat)
@@ -210,8 +219,8 @@ readRawFiles <- function(dateList, instrument, sep, vars, timeColFormat,
     #check sensor info and information given is consistent
     checkSensorInfo(instrument, sensorInfo, DATE)
     #select raw files for this serial
-    rawFiles <- selectRawFiles(sensorInfo, instrument)
-
+    browser()
+    rawFiles <- selectRawFiles(sensorInfo, instrument, DRIVE)
     #get columns that must be kept as characters (time columns)
     classCols <- getClassCols(nTimeCols)
     # read in all data in raw files and bind this into dataframe
