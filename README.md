@@ -3,9 +3,7 @@
 A set of functions that can come in handy for those using or checking LUMA data. 
 
 ## Installation
-
-Open Rstudio on the RACC with the command `fcRStudio `.
-Then install the package:
+To install the package:
 ```r
 devtools::install_github('kitbenjamin/analysisToolsLUMA') 
 
