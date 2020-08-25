@@ -1,4 +1,4 @@
-getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
+getInstOutDef <- function(instrument, level, startDate, fileTimeRes, variables){
   #get the output definitions for the instrument specified
   print('Getting output definitions from metadata site...')
   # we are assuming the out def doesn't change throughout the period
@@ -31,7 +31,7 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes){
   
   # if ceilometer then different variables stored in different output defs
   if (instrument$id == 'CL31' | instrument$id == 'CT25K'){
-    instOutDef <- checkCorrectCeilOutDef(instOutDef)
+    instOutDef <- checkCorrectCeilOutDef(instOutDef, variables)
   }
   
   # decide which output def to use based on the file time res and if is ECpack
@@ -54,7 +54,7 @@ checkInstSerial <- function(instSerial){
   }
 }
 
-checkCorrectCeilOutDef <- function(instOutDef){
+checkCorrectCeilOutDef <- function(instOutDef, variables){
   # ceilometers have multiple output definitions 
   correctOutDef <- vector(mode = 'list')
   n = 1

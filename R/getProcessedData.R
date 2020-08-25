@@ -23,7 +23,7 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   fileResList <- getFileRes(fileTimeRes)
   #get the output definitions ( assume start and end have same out defs to save
   # putting in a loop)
-  instOutDef <- getInstOutDef(instrument, level, startDate, fileTimeRes)
+  instOutDef <- getInstOutDef(instrument, level, startDate, fileTimeRes, variables)
   # get the variable units as a data frame
   varUnits <- getVarUnits(instOutDef, variables)
   #get the file prefix
