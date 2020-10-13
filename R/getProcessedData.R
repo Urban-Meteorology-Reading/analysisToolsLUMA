@@ -1,5 +1,5 @@
 getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
-                           variables, DRIVE){
+                           variables, DRIVE, calibrated){
   require(ncdf4)
 
   # check file Time res is specified
@@ -23,7 +23,7 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
   fileResList <- getFileRes(fileTimeRes)
   #get the output definitions ( assume start and end have same out defs to save
   # putting in a loop)
-  instOutDef <- getInstOutDef(instrument, level, startDate, fileTimeRes, variables)
+  instOutDef <- getInstOutDef(instrument, level, startDate, fileTimeRes, variables, calibrated)
   # get the variable units as a data frame
   varUnits <- getVarUnits(instOutDef, variables)
   #get the file prefix

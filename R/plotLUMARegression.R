@@ -38,8 +38,8 @@
 #'                                  variable, fileTimeRes, tickBreaks, dateLabelFormat)
 
 plotLUMARegression <- function(instrument1, instrument2, startDate, endDate,
-                               variable, fileTimeRes, DRIVE = NULL, tickBreaks = NA,
-                               dateLabelFormat = NA){
+                               variable, fileTimeRes, DRIVE = NULL,
+                               tickBreaks = NA, dateLabelFormat = NA){
 
   #get the required data and analysis
   varData <- getLUMARegressionData(instrument1, instrument2, startDate, endDate,

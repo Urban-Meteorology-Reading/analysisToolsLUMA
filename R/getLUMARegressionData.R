@@ -12,6 +12,7 @@
 #' LUMA metadata site.
 #' @param fileTimeRes The file time resolution- this must be the same for each instrument.
 #' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
+#' @param calibrated Boolean. Get calibrated ceilometer data. See https://github.com/Urban-Meteorology-Reading/ceilometer_calibration.
 #' @return A list with three elements: $data containing a dataframe of variable from
 #' each instrument between start and endDate, $units containing the variable units
 #' as diplayed on the metadata website and $anaylsis which is where several regression
@@ -33,12 +34,12 @@
 #'                                  variable, fileTimeRes)
 
 getLUMARegressionData <- function(instrument1, instrument2, startDate, endDate,
-                              variable, fileTimeRes = NA, DRIVE = NULL){
+                              variable, fileTimeRes = NA, DRIVE = NULL, calibrated = FALSE){
 
   #varData is a list containing a dataframe with the data for both instruments
   # and the units of the variable
   varData_units <- getVarData(instrument1, instrument2, startDate, endDate,
-                        variable, fileTimeRes, DRIVE)
+                        variable, fileTimeRes, DRIVE, calibrated)
 
   #do some analysis
   varData_units2 <- prepVarData(varData_units)

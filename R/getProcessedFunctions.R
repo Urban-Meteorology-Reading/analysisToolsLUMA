@@ -1,4 +1,4 @@
-getInstOutDef <- function(instrument, level, startDate, fileTimeRes, variables){
+getInstOutDef <- function(instrument, level, startDate, fileTimeRes, variables, calibrated){
   #get the output definitions for the instrument specified
   print('Getting output definitions from metadata site...')
   # we are assuming the out def doesn't change throughout the period
@@ -36,6 +36,18 @@ getInstOutDef <- function(instrument, level, startDate, fileTimeRes, variables){
   
   # decide which output def to use based on the file time res and if is ECpack
   instOutDefVals <- selectOutDef(fileTimeRes, instrument, instOutDef)
+  
+  #check if using the calibrated ceilometer data
+  if (calibrated == TRUE){
+    # calibrated can only be appplied to ceilometers (as things stand)
+    if (instrument$id == 'CL31' | instrument$id == 'CT25K'){
+      #get new file prefix  
+      fpCal <- getCalibratedFilePre(instOutDefVals)
+      instOutDefVals[['filePrefix']] <- fpCal
+    } else {
+      warning('calibrated not a valid argument for this instrument... ignoring')
+    }
+  }
 
   return(instOutDefVals)
 }
@@ -71,6 +83,13 @@ checkCorrectCeilOutDef <- function(instOutDef, variables){
   if (length(correctOutDef) > 1) stop('variables found in multiple output definitions')
   
   return(correctOutDef)
+}
+
+getCalibratedFilePre <- function(instOutDefVals){
+  #add calibrated into ceilometer file prefix
+  fpSplit <- strsplit(instOutDefVals[['filePrefix']], '_')[[1]]
+  fpCal <- paste0(c(fpSplit[1:2], 'calibrated', 'SWT'), collapse = '_')
+  return(fpCal)
 }
 
 selectOutDef <- function(fileTimeRes, instrument, instOutDef){

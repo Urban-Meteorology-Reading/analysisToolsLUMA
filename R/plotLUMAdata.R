@@ -23,6 +23,7 @@
 #' if multiple time columns.
 #' @param skipRows How many rows to skip when reading raw file. Default is none.
 #' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
+#' @param calibrated Boolean. Get calibrated ceilometer data. See https://github.com/Urban-Meteorology-Reading/ceilometer_calibration.
 #' @param title The title of the plot. If not specified then a default will be
 #' generated based on information given.
 #' @param SAVEplot Boolean whether to save the plot.
@@ -69,8 +70,8 @@
 
 plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
                    fileTimeRes = NA,  sep = NA, variableColNos = NA,
-                   timeColFormat = NA, skipRows = 0, DRIVE = NULL, tickBreaks = NA,
-                   dateLabelFormat = NA,title = NA, SAVEplot = FALSE,
+                   timeColFormat = NA, skipRows = 0, DRIVE = NULL, calibrated = FALSE, 
+                   tickBreaks = NA, dateLabelFormat = NA,title = NA, SAVEplot = FALSE,
                    SAVEname = NA, SAVEpath = NULL, SAVEsize = NA){
 
   #check the save parameters at start to prevent wasting time
@@ -80,7 +81,7 @@ plotLUMAdata <- function(instrument, level, startDate, endDate, variables,
 
   # get the data
   allData <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes,
-                    sep, variableColNos, timeColFormat, skipRows, DRIVE)
+                    sep, variableColNos, timeColFormat, skipRows, DRIVE, calibrated)
 
   # plot the data
   finalPlot <- plotTimeSeries(allData, tickBreaks, dateLabelFormat, title, SAVEplot, SAVEname, SAVEpath,

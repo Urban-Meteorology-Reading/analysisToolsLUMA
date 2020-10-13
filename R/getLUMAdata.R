@@ -23,7 +23,8 @@
 #' if multiple time columns.
 #' @param skipRows How many rows to skip when reading raw file. Default is none.
 #' @param DRIVE If running on windows which drive is /storage/basic/micromet mapped to e.g. Z
-#'
+#' @param calibrated Boolean. Get calibrated ceilometer data. See https://github.com/Urban-Meteorology-Reading/ceilometer_calibration.
+#' 
 #' @return A list of containing the requested data and the variable units.
 #' @export
 #'
@@ -48,7 +49,8 @@
 #' L1data <- getLUMAdata(instrument, level, startDate, endDate, variables, fileTimeRes)
 
 getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTimeRes = NA,
-                   sep = NA, variableColNos = NA, timeColFormat = NA, skipRows = 0, DRIVE = NULL){
+                   sep = NA, variableColNos = NA, timeColFormat = NA, skipRows = 0, DRIVE = NULL,
+                   calibrated = FALSE){
 
   require(stringr)
   require(dplyr)
@@ -71,7 +73,7 @@ getLUMAdata <- function(instrument, level, startDate, endDate, variables, fileTi
                                  timeColFormat, skipRows, DRIVE)}
   # otherwise read processed data
   } else {allData <- getProcessedData(instrument, level, startDate, endDate,
-                                    fileTimeRes, variables, DRIVE)}
+                                    fileTimeRes, variables, DRIVE, calibrated)}
 
   return(allData)
 }
