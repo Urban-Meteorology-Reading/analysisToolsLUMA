@@ -9,7 +9,11 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
 
   #if only a serial number is supplied then get site and id
   instrument <- checkSerialInfo(instrument, startDate)
-
+  
+  #for thermocouple check outdef supplied
+  if (instrument[['id']] == 'THERMOCOUPLE'){
+    checkThermocoupleOutDef(instrument)
+  }
   #print(instrument)
 
   print(paste('Creating dataframe of', paste(variables, collapse = ', '),
@@ -55,7 +59,6 @@ getProcessedData <- function(instrument, level, startDate, endDate, fileTimeRes,
 
   return(allData)
 }
-
 
 
 

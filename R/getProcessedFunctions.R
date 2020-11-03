@@ -1,3 +1,13 @@
+checkThermocoupleOutDef <- function(instrument){
+  #thermocouple has two outdef options - user must choose 1
+  
+  if (!('outdef' %in% names(instrument))){
+    stop('THERMOCOUPLE instrument must have one of "Omega_T" or "Thermocouple" (
+         see metadata site for what these mean) as an outdef in the instrument list
+         e.g. instrument <- list(id = "THERMOCOUPLE", site = "IMU", oudef = "Omega_T")')
+  }
+}
+
 getInstOutDef <- function(instrument, level, startDate, fileTimeRes, variables, calibrated){
   #get the output definitions for the instrument specified
   print('Getting output definitions from metadata site...')
@@ -103,7 +113,10 @@ selectOutDef <- function(fileTimeRes, instrument, instOutDef){
   } else if (any(grepl(fileTimeRes, names(instOutDef)))){
     # if theres an ouput def for the file time res
     odInd <- grep(fileTimeRes,names(instOutDef))
-  } else {
+  } else if (instrument$id == 'THERMOCOUPLE'){
+    #thermocouple needs outdef manually defined
+    odInd <- grep(instrument$outdef, names(instOutDef))
+  }  else {
     #otherwise try to use the instrument id
     odInd <- which(names(instOutDef) == instrument$id)
   }
@@ -173,6 +186,7 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
   #add every variable to dataframe
   for(i in 1:length(variables)){
     var <- ncvar_get(instIn, variables[i])
+    #check if 2d or 1d 
     varDayData[[variables[i]]] <- var
   }
   
