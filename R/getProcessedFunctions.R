@@ -175,6 +175,14 @@ chooseFiles <- function(dataDir, filePre, fileTimeRes){
   return(dayFile)
 }
 
+format2Ddata <- function(var, varName){
+  # assume each column represents time and row profile reading e.g. temperature tower
+  varT <- t(data.frame(var))
+  colnames(varT) <- 1:ncol(varT)
+  rownames(varT) <- 1:nrow(varT)
+  return(varT)
+}
+
 readNCDF <- function(dataDir, dayFile, variables, DATE){
   #open file
   instIn <- nc_open(file.path(dataDir, dayFile))
@@ -187,6 +195,9 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
   for(i in 1:length(variables)){
     var <- ncvar_get(instIn, variables[i])
     #check if 2d or 1d 
+    if (ncol(var) > 1){
+      var <- format2Ddata(var, variables[i])
+    }
     varDayData[[variables[i]]] <- var
   }
   
