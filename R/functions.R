@@ -57,7 +57,7 @@ checkInstrument <- function(instrument){
     stop('Instrument arg must be a list')
   }
 
-  if (any(!(names(instrument) %in% c('id', 'site', 'serial', 'ECpack')))){
+  if (any(!(names(instrument) %in% c('id', 'site', 'serial', 'ECpack', 'outdef')))){
     stop('Invalid instrument input. Valid inputs are: id, site, serial, ECpack')
   }
 }
