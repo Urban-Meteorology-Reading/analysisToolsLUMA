@@ -195,7 +195,7 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
   for(i in 1:length(variables)){
     var <- ncvar_get(instIn, variables[i])
     #check if 2d or 1d 
-    if (ncol(var) > 1){
+    if (length(dim(var)) > 1){
       var <- format2Ddata(var, variables[i])
     }
     varDayData[[variables[i]]] <- var
