@@ -178,7 +178,8 @@ chooseFiles <- function(dataDir, filePre, fileTimeRes){
 format2Ddata <- function(var, varName){
   # assume each column represents time and row profile reading e.g. temperature tower
   varT <- t(data.frame(var))
-  colnames(varT) <- 1:ncol(varT)
+  newNames <- paste0(varName, '_', seq(1:ncol(varT)))
+  colnames(varT) <- newNames
   rownames(varT) <- 1:nrow(varT)
   return(varT)
 }
@@ -196,9 +197,12 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
     var <- ncvar_get(instIn, variables[i])
     #check if 2d or 1d 
     if (length(dim(var)) > 1){
+      #browser()
       var <- format2Ddata(var, variables[i])
+      varDayData <- cbind(varDayData, var)
+    } else {
+      varDayData[[variables[i]]] <- var
     }
-    varDayData[[variables[i]]] <- var
   }
   
   nc_close(instIn)
@@ -206,7 +210,7 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
   return(varDayData)
 }
 
-missingDay <- function(DATE, variables, fileResList){
+missingDay <- function(DATE, variables, fileResList, instrument){
   #get the start and end of the day
   daystart <- as.POSIXct(DATE)
   # create a list of all times in the day at file resolution filled with na
@@ -222,9 +226,30 @@ missingDay <- function(DATE, variables, fileResList){
   # fill the dataframe with NAs
   varDayData <- data.frame('TIME' = timesInDay)
   for (i in 1:length(variables)){
-    varDayData[[variables[i]]] <- NA
+    # temperature tower needs 8 columns
+    if(instrument$id == 'THERMOCOUPLE' & 
+        (variables[i] == 'Tair'|variables[i] == 'sd_Tair')){
+      variables2 <- paste0(variables, '_', seq(1:8))
+      missingDayData <- data.frame(matrix(data = NA, nrow = nrow(varDayData), ncol = 8))
+      names(missingDayData) <- variables2
+      varDayData <- cbind(varDayData, missingDayData)
+    } else {
+      varDayData[[variables[i]]] <- NA
+    }
   }
   return(varDayData)
+}
+
+checkProfileColumns <- function(varDayData, instrument){
+  #check if profile then we need to have consistent columns
+  if(instrument$id == 'THERMOCOUPLE' & 
+     (variables[i] == 'Tair'|variables[i] == 'sd_Tair')){
+    if(ncol(varDayData) != 9){
+      remainingNumbers <- (ncol(varDayData)+1):9
+      remainingColNames <- paste0('Tair_', remainingNumbers)
+      varDayData[[remainingColNames]] <- NA
+    }
+  }
 }
 
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
@@ -234,7 +259,7 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
   #for every date
   for (idate in 1:length(dateList)){
     DATE <- dateList[idate]
-
+    if(idate == 872) browser
     #replace the basedir placeholders with actual information
     replacementVec <- c()
     replacementVec <- createReplacementVec(DATE, instrument, level,
@@ -247,10 +272,12 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
       print(paste('Reading file: ', file.path(dataDir, dayFile)))
       #open the file and get the variables into a dataframe
       varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
+      #check if profile has enough columns
+      varDayData <- checkProfileColumns(varDayData, instrument)
     } else {
-      #print(paste('File for', DATE, 'doesnt exist'))
+      print(paste('File for', DATE, 'doesnt exist'))
       #fill dataframes for missing files with NA
-      varDayData <- missingDay(DATE, variables, fileResList)
+      varDayData <- missingDay(DATE, variables, fileResList, instrument)
     }
     varDayList[[idate]] <- varDayData
   }
