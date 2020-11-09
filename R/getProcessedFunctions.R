@@ -197,7 +197,6 @@ readNCDF <- function(dataDir, dayFile, variables, DATE){
     var <- ncvar_get(instIn, variables[i])
     #check if 2d or 1d 
     if (length(dim(var)) > 1){
-      #browser()
       var <- format2Ddata(var, variables[i])
       varDayData <- cbind(varDayData, var)
     } else {
@@ -240,16 +239,25 @@ missingDay <- function(DATE, variables, fileResList, instrument){
   return(varDayData)
 }
 
-checkProfileColumns <- function(varDayData, instrument){
+checkProfileColumns <- function(varDayData, instrument, variables){
   #check if profile then we need to have consistent columns
-  if(instrument$id == 'THERMOCOUPLE' & 
-     (variables[i] == 'Tair'|variables[i] == 'sd_Tair')){
-    if(ncol(varDayData) != 9){
-      remainingNumbers <- (ncol(varDayData)+1):9
+  if ('Tair' %in% variables){
+    if(length(grep('^Tair_*', names(varDayData))) != 8){
+      remainingNumbers <- (length(grep('^Tair_*', names(varDayData)))+1):8
       remainingColNames <- paste0('Tair_', remainingNumbers)
-      varDayData[[remainingColNames]] <- NA
+      for (i in remainingColNames){varDayData[[i]] <- NA}
     }
   }
+  
+  if ('sd_Tair' %in% variables){
+    if(length(grep('^sd_Tair_*', names(varDayData))) != 8){
+      remainingNumbers <- (length(grep('^sd_Tair_*', names(varDayData)))+1):9
+      remainingColNames <- paste0('sd_Tair_', remainingNumbers)
+      for (i in remainingColNames){varDayData[[remainingColNames]] <- NA}
+    }
+  }
+  
+  return(varDayData)
 }
 
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
@@ -259,7 +267,6 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
   #for every date
   for (idate in 1:length(dateList)){
     DATE <- dateList[idate]
-    if(idate == 872) browser
     #replace the basedir placeholders with actual information
     replacementVec <- c()
     replacementVec <- createReplacementVec(DATE, instrument, level,
@@ -273,7 +280,9 @@ getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
       #open the file and get the variables into a dataframe
       varDayData <- readNCDF(dataDir, dayFile, variables, DATE)
       #check if profile has enough columns
-      varDayData <- checkProfileColumns(varDayData, instrument)
+      if (instrument$id == 'THERMOCOUPLE'){
+        varDayData <- checkProfileColumns(varDayData, instrument, variables)
+      }
     } else {
       print(paste('File for', DATE, 'doesnt exist'))
       #fill dataframes for missing files with NA
