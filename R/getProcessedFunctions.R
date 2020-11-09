@@ -240,20 +240,18 @@ missingDay <- function(DATE, variables, fileResList, instrument){
 }
 
 checkProfileColumns <- function(varDayData, instrument, variables){
-  #check if profile then we need to have consistent columns
+  #check if profile then we need to have consistent columns. If not convert to na
   if ('Tair' %in% variables){
     if(length(grep('^Tair_*', names(varDayData))) != 8){
-      remainingNumbers <- (length(grep('^Tair_*', names(varDayData)))+1):8
-      remainingColNames <- paste0('Tair_', remainingNumbers)
-      for (i in remainingColNames){varDayData[[i]] <- NA}
+      columnNames <- paste0('Tair_', 1:8)
+      for (i in columnNames){varDayData[[i]] <- NA}
     }
   }
   
   if ('sd_Tair' %in% variables){
     if(length(grep('^sd_Tair_*', names(varDayData))) != 8){
-      remainingNumbers <- (length(grep('^sd_Tair_*', names(varDayData)))+1):9
-      remainingColNames <- paste0('sd_Tair_', remainingNumbers)
-      for (i in remainingColNames){varDayData[[remainingColNames]] <- NA}
+      columnNames <- paste0('sd_Tair_', 1:8)
+      for (i in columnNames){varDayData[[i]] <- NA}
     }
   }
   
