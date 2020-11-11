@@ -153,7 +153,11 @@ createReplacementVec <- function(DATE, instrument, level, replacementVec, instOu
   replacementVec <- c(replacementVec, '%m' = strftime(DATE, '%m'))
 
   replacementVec <- c(replacementVec, '%LEVEL' = paste0('L',level))
-  replacementVec <- c(replacementVec, '%CITY' = instOutDef$header[['City', 2]])
+  if (instrument$site != 'RMR'){
+    replacementVec <- c(replacementVec, '%CITY' = instOutDef$header[['City', 2]])
+  } else {
+    replacementVec <- c(replacementVec, '%CITY' = 'London')
+  }
   replacementVec <- c(replacementVec, '%SITE' = instrument$site)
 
   return(replacementVec)
