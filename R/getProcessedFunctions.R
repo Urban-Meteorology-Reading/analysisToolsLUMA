@@ -98,7 +98,8 @@ checkCorrectCeilOutDef <- function(instOutDef, variables){
 getCalibratedFilePre <- function(instOutDefVals){
   #add calibrated into ceilometer file prefix
   fpSplit <- strsplit(instOutDefVals[['filePrefix']], '_')[[1]]
-  fpCal <- paste0(c(fpSplit[1:2], 'calibrated', 'SWT'), collapse = '_')
+  fpCal <- paste0(c(fpSplit[1:2], 'calibrated', instOutDefVals$header['Site',2]), 
+                  collapse = '_')
   return(fpCal)
 }
 
@@ -265,6 +266,7 @@ checkProfileColumns <- function(varDayData, instrument, variables){
 getNCDFData <- function(dateList, instrument, level, dataDirForm, instOutDef,
                         filePre, fileTimeRes, fileResList, variables){
   print('Reading data')
+
   varDayList <- vector(mode = 'list', length = length(dateList))
   #for every date
   for (idate in 1:length(dateList)){
